@@ -1,0 +1,4 @@
+interface:
+  display_name: "Project Experience Capture"
+  short_description: "Turn completed work into resume project material"
+  default_prompt: "Use $project-experience-capture to turn this task or project into a project-experience material file."

@@ -28,6 +28,7 @@
     analysis-report/
     final-report/
     report-analysis-reviewer/
+    project-record-tracker/
   agents/
     claude/
       android-reverse-agent.md
@@ -66,6 +67,7 @@
 | `skills/analysis-report/` | 普通分析报告，支持精简版、标准版、阶段版 | 必装 |
 | `skills/final-report/` | 最终报告合并 | 必装 |
 | `skills/report-analysis-reviewer/` | 报告审查 | 必装 |
+| `skills/project-record-tracker/` | 项目记录、项目追溯、项目复盘、简历和面试素材 | 推荐安装 |
 
 ### 2. Agents
 
@@ -133,7 +135,7 @@ SKILL.md.bak-20260529-135457
 
 ### 1. 安装 Skills
 
-把这四个文件夹复制到 Claude / Codex 能读取 skill 的目录。
+把这些文件夹复制到 Claude / Codex 能读取 skill 的目录。
 
 需要复制：
 
@@ -142,6 +144,7 @@ skills/android-reverse/
 skills/analysis-report/
 skills/final-report/
 skills/report-analysis-reviewer/
+skills/project-record-tracker/
 ```
 
 推荐目标：
@@ -161,11 +164,13 @@ Codex:
 ~/.claude/skills/analysis-report/SKILL.md
 ~/.claude/skills/final-report/SKILL.md
 ~/.claude/skills/report-analysis-reviewer/SKILL.md
+~/.claude/skills/project-record-tracker/SKILL.md
 
 ~/.codex/skills/android-reverse/SKILL.md
 ~/.codex/skills/analysis-report/SKILL.md
 ~/.codex/skills/final-report/SKILL.md
 ~/.codex/skills/report-analysis-reviewer/SKILL.md
+~/.codex/skills/project-record-tracker/SKILL.md
 ```
 
 ### 2. 安装 Claude agents
@@ -345,6 +350,14 @@ Codex 使用 report-analysis-reviewer 审查。
 在项目根目录提供 项目规则.md。
 Claude 分析前读取 项目规则.md。
 Codex 合并和审查前读取 项目规则.md。
+```
+
+### 项目记录和经历追溯
+
+```text
+使用 project-record-tracker 读取会话上下文、项目文档、报告、数据、工作目录文件和可用元数据。
+输出 <项目名称>-项目记录.md。
+用于追溯项目开始时间、完成时间、主要工作内容、关键产物、当前状态、简历项目经历素材和面试追问准备。
 ```
 
 ## 七、维护原则

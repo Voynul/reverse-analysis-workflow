@@ -79,7 +79,13 @@ def install_claude(home: Path, dry_run: bool) -> None:
     copy_named_dirs(
         ROOT / "skills",
         dst / "skills",
-        ["android-reverse", "analysis-report", "final-report", "report-analysis-reviewer"],
+        [
+            "android-reverse",
+            "analysis-report",
+            "final-report",
+            "report-analysis-reviewer",
+            "project-record-tracker",
+        ],
         dry_run,
     )
     copy_tree_contents(ROOT / "agents" / "claude", dst / "agents", dry_run)
@@ -96,7 +102,13 @@ def install_codex(home: Path, dry_run: bool) -> None:
     copy_named_dirs(
         ROOT / "skills",
         dst / "skills",
-        ["android-reverse", "analysis-report", "final-report", "report-analysis-reviewer"],
+        [
+            "android-reverse",
+            "analysis-report",
+            "final-report",
+            "report-analysis-reviewer",
+            "project-record-tracker",
+        ],
         dry_run,
     )
 
@@ -120,7 +132,13 @@ def install_opencode(home: Path, dry_run: bool) -> None:
     copy_named_dirs(
         ROOT / "skills",
         dst / "skills",
-        ["android-reverse", "analysis-report", "final-report", "report-analysis-reviewer"],
+        [
+            "android-reverse",
+            "analysis-report",
+            "final-report",
+            "report-analysis-reviewer",
+            "project-record-tracker",
+        ],
         dry_run,
     )
     copy_tree_contents(ROOT / "agents" / "opencode", dst / "agents", dry_run)
