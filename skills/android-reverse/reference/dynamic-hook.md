@@ -28,6 +28,27 @@
 4. 启动后再次检测连接状态。
 5. 如果 MCP 仍不可用，但设备上已有 frida-server 进程，可回退 Frida CLI 直连。
 
+## 本机 Frida CLI 环境
+
+本机 Frida 16.5.9、`frida-tools`、`wallbreaker` 和 `frida-dexdump` 安装在 Conda 的 `android` 环境，不再安装于全局 Python。不得用裸 `frida` 是否存在判断 Frida CLI 是否可用。
+
+优先使用技能自带启动器，它会定位 Conda、解析 `android` 环境的真实路径并直接执行对应程序：
+
+```powershell
+& "$env:USERPROFILE\.codex\skills\android-reverse\scripts\run-frida.ps1" frida --version
+& "$env:USERPROFILE\.codex\skills\android-reverse\scripts\run-frida.ps1" frida-ps -U
+& "$env:USERPROFILE\.codex\skills\android-reverse\scripts\run-frida.ps1" frida-trace -U -i "open*" com.example.app
+& "$env:USERPROFILE\.codex\skills\android-reverse\scripts\run-frida.ps1" frida-dexdump -U -f com.example.app
+```
+
+执行规则：
+
+1. 非交互检查和普通 CLI 调用统一通过 `scripts/run-frida.ps1`。
+2. 需要直接进入交互式 Frida REPL 时，同样通过启动器调用 `frida`，并为终端分配 PTY。
+3. 只有已经明确激活 `android` 环境并验证 `frida --version` 为 `16.5.9` 时，才可在该终端使用裸命令。
+4. 启动器报告 Conda、`android` 环境或工具不存在时，应报告具体缺失项，不得静默回退到全局 Python 或自动安装其他 Frida 版本。
+5. Android 设备端 frida-server 应优先与客户端版本一致；版本不匹配时先记录两端版本，再决定是否切换环境或服务端。
+
 手动启动常见流程：
 
 ```bash
