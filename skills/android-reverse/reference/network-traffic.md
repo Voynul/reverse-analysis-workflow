@@ -21,17 +21,19 @@
 
 | 任务 | 工具 |
 |---|---|
-| 查看所有域名 | `mcp__reqable__get_domains` |
-| 列出请求 | `mcp__reqable__list_requests` |
-| 获取请求详情 | `mcp__reqable__get_request` |
-| 搜索请求 | `mcp__reqable__search_requests` |
-| 分析 API 结构 | `mcp__reqable__analyze_api` |
-| WebSocket 会话 | `mcp__reqable__list_websocket_sessions` |
-| 分析 WebSocket | `mcp__reqable__analyze_websocket_session` |
-| 搜索 WebSocket 消息 | `mcp__reqable__search_websocket_messages` |
-| 生成请求代码 | `mcp__reqable__generate_code` |
-| 健康检查 | `mcp__reqable__health_report` |
-| 导入 HAR | `mcp__reqable__import_har` |
+| 查看所有域名 | `get_domains` |
+| 列出请求 | `list_requests` |
+| 获取请求详情 | `get_request` |
+| 搜索请求 | `search_requests` |
+| 分析 API 结构 | `analyze_api` |
+| WebSocket 会话 | `list_websocket_sessions` |
+| 分析 WebSocket | `analyze_websocket_session` |
+| 搜索 WebSocket 消息 | `search_websocket_messages` |
+| 生成请求代码 | `generate_code` |
+| 健康检查 | `health_report` |
+| 导入 HAR | `import_har` |
+
+以上为逻辑操作名，实际命名空间以当前环境暴露的 Reqable 服务为准。
 
 ## 分析模板
 

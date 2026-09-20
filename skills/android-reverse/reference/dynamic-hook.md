@@ -20,62 +20,39 @@
 
 ## Frida 连接流程
 
-每次动态 Hook 前先确认 Frida Server 状态：
+当前任务第一次进入动态 Hook 分支时确认 Frida Server 状态：
 
 1. 使用 Frida MCP 检测 frida-server 是否运行。
 2. 如果未运行，优先使用 Frida MCP 启动。
 3. 如果 MCP 无法自动启动，通过 ADB 进入设备后手动启动。
-4. 启动后再次检测连接状态。
+4. 启动后确认连接状态，并在工具、设备和连接未变化时复用该结果。
 5. 如果 MCP 仍不可用，但设备上已有 frida-server 进程，可回退 Frida CLI 直连。
 
-## 本机 Frida CLI 环境
+## Frida CLI 适配
 
-本机 Frida 16.5.9、`frida-tools`、`wallbreaker` 和 `frida-dexdump` 安装在 Conda 的 `android` 环境，不再安装于全局 Python。不得用裸 `frida` 是否存在判断 Frida CLI 是否可用。
-
-优先使用技能自带启动器，它会定位 Conda、解析 `android` 环境的真实路径并直接执行对应程序：
-
-```powershell
-& "$env:USERPROFILE\.codex\skills\android-reverse\scripts\run-frida.ps1" frida --version
-& "$env:USERPROFILE\.codex\skills\android-reverse\scripts\run-frida.ps1" frida-ps -U
-& "$env:USERPROFILE\.codex\skills\android-reverse\scripts\run-frida.ps1" frida-trace -U -i "open*" com.example.app
-& "$env:USERPROFILE\.codex\skills\android-reverse\scripts\run-frida.ps1" frida-dexdump -U -f com.example.app
-```
+工具命名空间和 CLI 安装位置由当前 Agent 环境决定。优先使用已注册的 Frida 服务；不可用时可以使用经过验证的 Frida CLI 或环境提供的适配脚本。
 
 执行规则：
 
-1. 非交互检查和普通 CLI 调用统一通过 `scripts/run-frida.ps1`。
-2. 需要直接进入交互式 Frida REPL 时，同样通过启动器调用 `frida`，并为终端分配 PTY。
-3. 只有已经明确激活 `android` 环境并验证 `frida --version` 为 `16.5.9` 时，才可在该终端使用裸命令。
-4. 启动器报告 Conda、`android` 环境或工具不存在时，应报告具体缺失项，不得静默回退到全局 Python 或自动安装其他 Frida 版本。
-5. Android 设备端 frida-server 应优先与客户端版本一致；版本不匹配时先记录两端版本，再决定是否切换环境或服务端。
-
-手动启动常见流程：
-
-```bash
-adb shell
-dbg
-cd /data/local/tmp
-./florida-server-16.5.9
-```
-
-注意：
-
-- `dbg` 用于进入 root 权限环境；不要使用 `su -c` 或 `dbg -c` 的单行形式。
-- `florida-server-16.5.9` 是重命名后的 frida-server 名称，实际文件名以设备为准。
-- 如果连接失败，应提示用户开启或检查 Frida 服务，不得把连接失败当作运行时无对应逻辑。
+1. 不假设固定目录、Shell、Python 环境、服务端文件名或提权方式。
+2. 启动器或 CLI 报告工具不存在时，说明具体缺失项，不静默安装或切换版本。
+3. Android 设备端 frida-server 应与客户端兼容；版本不匹配时先记录两端版本，再决定处理方式。
+4. 如果连接失败，报告连接条件和受影响分支，不得把失败当作运行时无对应逻辑。
 
 ## 常用操作速查
 
 | 操作 | 工具 |
 |---|---|
-| 检测状态 | `mcp__frida__check_frida_status` |
-| 启动服务 | `mcp__frida__start_frida_server` |
-| 停止服务 | `mcp__frida__stop_frida_server` |
-| 附加进程 | `mcp__frida__attach` |
-| 启动 APP 并附加 | `mcp__frida__spawn` |
-| 列出应用 | `mcp__frida__list_applications` |
-| 获取前台应用 | `mcp__frida__get_frontmost_application` |
-| 获取 Hook 输出 | `mcp__frida__get_messages` |
+| 检测状态 | `check_frida_status` |
+| 启动服务 | `start_frida_server` |
+| 停止服务 | `stop_frida_server` |
+| 附加进程 | `attach` |
+| 启动 APP 并附加 | `spawn` |
+| 列出应用 | `list_applications` |
+| 获取前台应用 | `get_frontmost_application` |
+| 获取 Hook 输出 | `get_messages` |
+
+以上为逻辑操作名，实际命名空间以当前环境暴露的 Frida 服务为准。
 
 ## 日志格式
 
@@ -85,21 +62,14 @@ cd /data/local/tmp
 {"ts":"2026-01-01T00:00:00.000Z","type":"HOOK","class":"原始类名","method":"原始方法名","args":{},"ret":{},"stack":"可选"}
 ```
 
-对大对象只截取报告展示片段，但原始日志应保留完整数据。不要把示例日志当成真实证据。
+对大对象只保留当前问题需要的内容，并避免在对话或日志中暴露无关敏感数据。不要把示例日志当成真实证据。
 
-## Java Hook 模板
+## Hook 生成要求
 
-```javascript
-Java.perform(function() {
-  var TargetClass = Java.use("com.example.TargetClass");
-  TargetClass.targetMethod.implementation = function(arg1, arg2) {
-    console.log("[+] targetMethod args=" + arg1 + "," + arg2);
-    var result = this.targetMethod(arg1, arg2);
-    console.log("[+] targetMethod ret=" + result);
-    return result;
-  };
-});
-```
+- 根据原始类名、方法名和完整参数类型选择目标，不使用阅读阶段创建的语义别名。
+- 遇到重载时保存明确的 overload handle，并通过该 handle 调用原始实现。
+- 根据目标实际情况处理构造器、静态方法、自定义 ClassLoader、异步调用和 native 方法。
+- 先观察原始行为，再进行返回值替换或参数修改；两类结果分开记录。
 
 ## 注意事项
 

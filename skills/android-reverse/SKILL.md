@@ -1,6 +1,6 @@
 ---
 name: android-reverse
-description: 使用 JADX/JEB、Frida、mobile-mcp、Reqable 和 IDA 对 Android APK、Java/Kotlin、smali、运行时行为、网络协议及 native so/JNI 进行证据驱动的逆向分析。用于 APK 分析、反编译、动态 Hook、抓包、算法还原、混淆理解、JNI/native 分析和自动化触发；负责目标确认、工具路由、分析方法与中间状态，不负责强制生成正式报告。
+description: 对 Android APK、DEX、Java/Kotlin、smali、运行时行为、网络协议及 native so/JNI 进行证据驱动的逆向分析，并在用户明确要求时执行 APK 修改、重建、签名和运行验收。用于 APK 分析、反编译、动态 Hook、抓包、算法还原、混淆理解、JNI/native 分析、自动化触发和授权样本修改；根据当前环境选择可用的无头工具，不强制生成正式报告。
 ---
 
 # Android Reverse
@@ -9,9 +9,11 @@ description: 使用 JADX/JEB、Frida、mobile-mcp、Reqable 和 IDA 对 Android 
 
 ## 职责边界
 
-本技能负责分析方式、工具使用、目标身份确认、证据判断和内部工作状态。默认直接在对话中回答当前问题。
+本技能负责分析方式、工具使用、目标身份确认、证据判断和内部工作状态。默认执行只读分析并直接在对话中回答；只有用户明确要求修改 APK 时才进入修改与验收模式。
 
-本技能不强制生成 `rename.md`、`Question.md`、证据索引、普通报告、阶段报告或最终报告。需要正式报告时叠加 `analysis-report` 或 `final-report`；用户临时要求生成脚本、算法说明、调用链文档或其他文件时照常执行，不受“无需正式报告”限制。
+本技能不强制生成 `rename.md`、`Question.md`、证据索引、普通报告、阶段报告或最终报告。需要正式报告时叠加 `analysis-report` 或 `final-report`；用户临时要求生成脚本、算法说明、调用链文档或其他文件时照常执行。
+
+仅分析用户拥有、获准测试或明确用于研究、教学、竞赛的目标。修改模式不得覆盖原始 APK，必须保留目标身份、修改范围和验证结果。
 
 ## 核心原则
 
@@ -19,70 +21,86 @@ description: 使用 JADX/JEB、Frida、mobile-mcp、Reqable 和 IDA 对 Android 
 2. 不猜测：证据不足时标为推断或待确认，不得写成确定结论。
 3. 真实数据：加解密、字段解析和请求还原使用真实样本，不用占位数据冒充证据。
 4. 用户介入优先：用户对目标、工具、命名、产物和路径的明确要求高于技能默认策略；证据真实性与安全边界不因用户偏好而降低。
-5. 单目标分析：一次分析任务只处理一个 APK；同一会话可以在前一 APK 完成后由用户主动切换到另一个 APK，但不并行混合取证。
+5. 目标隔离：默认聚焦一个已确认目标；版本对比、split 集合或关联载荷分析可以处理多个文件，但必须分别确认身份并隔离证据。
 6. 工具联动：静态定位、动态验证、网络确认、手机操作和 native 分析按需要组合使用。
+7. 最小修改：修改模式只改变完成目标所需的最小范围，不把重构、去混淆或无关修复混入同一产物。
+8. 可验证完成：分析完成、构建成功、安装成功和运行结果是不同状态，不得互相替代。
+
+## 执行自由度
+
+本技能提供默认策略、证据要求和安全不变量，不穷举可用工具、分析方法或执行顺序。
+
+除授权边界、证据真实性、原始产物保护和用户明确要求外，Agent 可以根据目标结构、当前环境、工具能力和新证据，自主调整工具、顺序、组合方式和中间产物。发现更直接或更可靠的方法时，无需继续默认路线，但应说明影响结论的关键选择和验证方式。
+
+参考文档中的工具名、操作名、步骤和模板用于能力提示，不构成封闭清单。工具实际接口、目标特征或证据与默认建议不一致时，以真实环境和可验证结果为准。
 
 ## 启动协议
 
-使用本技能前按顺序执行：
+使用本技能前执行必要的最小启动检查：
 
 1. 定位项目根目录；存在 `项目规则.md` 时先读取。
-2. 读取 `.android-reverse/analysis-state.md`；如果是已确认目标的延续任务，恢复其状态。
-3. 确认当前 APK 是否需要正式报告。用户话术已经明确时直接记录，不重复询问；未明确时先询问。
-4. 确认当前目标 APK 的绝对路径、包名、`versionName` 和 `versionCode`。
-5. 确认或恢复该目标的工具模式，再开始实际分析。
+2. 如果 `.android-reverse/analysis-state.md` 存在且与当前目标匹配，读取并恢复状态；简单任务不为此自动创建状态文件。
+3. 确定任务模式：默认 `analysis`；需要 Hook、设备操作或抓包时增加 `runtime-validation`；用户明确要求修改 APK 时使用 `patch-and-verify`。
+4. 从用户请求确定交付物。未要求正式报告时默认直接回答，不为报告策略单独打断简单任务。
+5. 确认目标文件的绝对路径和可取得的身份信息；修改模式还需记录文件大小和 SHA-256。
+6. 只执行当前任务分支需要的环境检查和 `reference/workflow-gates.md` 关卡，再开始分析或修改。
 
-正式报告策略按单个 APK 分析任务记录。用户切换 APK 后重新确认；用户也可以声明项目级默认值或随时覆盖已有选择。
-
-工作状态和中间产物规则见 `reference/workspace-state.md`。
+工作状态和中间产物规则见 `reference/workspace-state.md`；APK 层级归属见 `reference/package-recon.md`。
 
 ## 工具路由
 
 | 场景 | 首选工具 | 补充工具 | 参考文档 |
 |---|---|---|---|
-| Java/Kotlin 逻辑、Manifest、调用链 | JADX GUI MCP（`jadx_mcp`），不可用则无头 JADX（`jadx_headless`） | JEB MCP、smali | `reference/static-analysis.md` |
+| Java/Kotlin 逻辑、Manifest、调用链 | 无头 JADX 服务 `jadx-headless` | JEB、smali | `reference/static-analysis.md` |
 | 参数、返回值、明文、分支、运行时调用栈 | Frida MCP | Frida CLI | `reference/dynamic-hook.md` |
 | 启动、点击、滑动、截图、触发流程 | mobile-mcp | ADB | `reference/mobile-automation.md` |
 | HTTP/HTTPS、WebSocket、HAR、接口字段 | reqable MCP | Hook 日志、解密结果 | `reference/network-traffic.md` |
-| so、JNI、native 加解密、签名、校验 | 无头 IDA（`idalib-mcp`），不可用再 GUI `ida` | Frida Native Hook | `reference/native-analysis.md` |
+| so、JNI、native 加解密、签名、校验 | 无头 IDA 服务 `idalib-mcp` | Frida Native Hook | `reference/native-analysis.md` |
+| 加固、Flutter、Unity、WebView、服务端归属 | 包结构与运行时侦察 | 静态字符串、Frida、网络证据 | `reference/package-recon.md` |
+| APK 修改、重建、签名、安装与验收 | Apktool 或等价无头构建工具 | 可用签名工具、ADB、mobile-mcp | `reference/patch-and-verify.md` |
 | 证据判断、混淆理解、语义命名 | 对话与内部分析材料 | 按需生成命名或证据文件 | `reference/evidence-and-renaming.md` |
 
-本机 Frida CLI 已隔离在 Conda 的 `android` 环境。回退 CLI 时必须使用 `scripts/run-frida.ps1`，不得依赖全局 PATH 中存在 `frida`；具体调用规则见 `reference/dynamic-hook.md`。
+工具命名空间由 Agent 宿主决定。技能正文只使用 MCP 服务名和逻辑能力，不假设宿主生成的命名空间前缀、安装路径或版本。只读取当前任务实际涉及的参考文档；能力映射和发现规则见 `reference/tool-capabilities.md`。
 
-### JADX 选择
+### 工具发现
 
-Java/Kotlin 静态分析一次只使用一个 JADX 模式，详细决策见 `reference/static-analysis.md`。
+1. 不在技能加载时启动或健康检查全部工具。
+2. 先根据任务判断需要的能力分支，再从当前 Agent 宿主暴露的工具列表识别候选服务。
+3. 当前任务第一次使用某项能力时，执行一次轻量验证或安全的只读操作；后续复用该结果。
+4. 只有连接失败、工具重启、配置变化、设备变化或宿主变化后才重新验证。
+5. 首选工具不可用时，可以使用经过验证的等价无头工具，并说明替代关系和证据边界；不得静默回退 GUI 服务。
+6. 没有可用替代方案时，只暂停受影响分支，继续不依赖该能力的工作。
 
-1. 用户明确指定 GUI 或无头时，以用户指定为准。
-2. `jadx_mcp` 无法连接且用户已提供 APK 绝对路径时，使用 `jadx_headless`。
-3. GUI 已连接但未加载 APK 时，提醒用户加载或明确选择无头，不自动回退。
-4. GUI 已加载 APK 时，先输出路径（可取得时）、包名和版本信息，等待用户确认后再分析。
-5. 已确认的工具选择绑定当前 APK；工具中断后不得静默切换。
-6. 无头模式只加载用户明确选择的绝对路径；服务生命周期按项目任务阶段管理。
+### JADX 无头模式
 
-### IDA 选择
+1. 当前环境提供 `jadx-headless` 时优先使用；不可用时可以使用经过验证的等价无头静态分析能力，不探测、调用或回退到 JADX GUI MCP。
+2. 只加载用户明确选择的 APK、DEX、AAB、XAPK、APKM 或 JAR 绝对路径。
+3. `load_apk` 后用 `current_apk`、`index_status` 和 Manifest 核对目标身份与索引质量。
+4. 工具连接、索引或反编译失败时报告失败位置，不把工具失败作为代码不存在的证据。
+5. 服务默认由 MCP 宿主管理；只有用户明确要求关闭或释放进程内存时才调用 `shutdown_jadx`。
 
-so / JNI / native 分析优先无头，详细规则见 `reference/native-analysis.md`。
+### IDA 无头模式
 
-1. 优先使用 `idalib-mcp`；不可用时才考虑 GUI `ida`。
-2. IDA session 不强制绑定 APK，APK 切换不自动关闭 session 或切换目标 so。
-3. Agent 只自动关闭自己为某个分析分支创建、且关闭策略明确的 session。
-4. 用户或外部打开的 GUI、database/session 由用户管理。
-5. 回退 GUI 时先输出当前二进制身份信息并等待用户确认，不因 GUI 已打开就直接分析。
+当前环境提供 `idalib-mcp` 时优先用于 so / JNI / native 分析；不可用时可以使用等价无头 native 分析能力，详细规则见 `reference/native-analysis.md`。
 
-如果任务需要某个 MCP 工具，但工具未启用、命名空间不存在、连接失败或服务未启动，应先按 JADX / IDA 回退规则处理；其他工具仍应暂停该分支，提示用户开启对应服务并附上失败原因。不得把 MCP 工具不可用当作目标 APK 没有对应逻辑的证据。
+1. 打开二进制时使用 `idb_open` 并显式选择无头模式；不得探测或接管 GUI IDA。
+2. 使用 `idb_list` 和健康状态确认 database/session、自动分析及反编译器状态。
+3. IDA session 不强制绑定 APK；APK 切换不自动切换目标 so。
+4. 无头 worker 的退出由 `idle_ttl_sec` 和服务端生命周期管理，Agent 不通过系统命令终止 worker。
 
-## 标准流程
+如果所需工具未启用、连接失败或服务未启动，先检查当前环境是否存在等价无头能力。没有替代方案时报告失败原因和受影响结论，不把工具不可用当作目标中没有对应逻辑的证据。
 
-1. 明确问题：确认要分析行为、接口、参数、返回值、算法、UI 触发、网络协议、so 逻辑还是完整链路。
-2. 静态定位：优先在项目约束和用户指定范围内查找入口；证据不足时再扩展到 Manifest、组件、类名、字符串、URL、日志和导出函数。
-3. 追踪链路：向上找触发入口，向下找执行结果，标出关键分支、配置、缓存、网络和回调。
-4. 理解混淆：根据分析需要决定是否进行工具内重命名或落盘记录；用户要求可读命名时优先执行。
-5. 动态验证：按需 Hook 参数、返回值、异常、解密函数和 Java/native 边界。
-6. 触发行为：需要运行态操作时说明动作及影响，再用 mobile-mcp 或 ADB 执行。
-7. 网络确认：用 Reqable、Hook 日志或解密结果获取真实请求、响应、字段和时序。
-8. Native 分析：需要时使用 IDA 建立 Java/JNI/native 映射，并按 session 所有权管理资源。
-9. 输出结论：直接回答当前问题，列明证据、已确认内容、推断和待确认项；只有用户要求时才生成额外文档。
+## 默认分析路线
+
+按任务需要选择步骤，不要求全部执行，也不要求固定顺序。
+
+1. 明确任务模式、交付物和目标身份。
+2. 判断关键逻辑归属：DEX、资源、native、Flutter、Unity、WebView 或服务端。
+3. 静态定位入口并追踪上下游链路，标出关键分支、配置、缓存、网络和回调。
+4. 根据需要理解混淆、建立语义名称或保存证据位置。
+5. 证据不足时使用 Hook、设备操作、抓包或 native 分析补证。
+6. 修改模式先建立对照基线，再实施最小修改、重建、安装和运行验收。
+7. 输出结论，区分直接观察、推断、假设、已否定内容和待确认项；只有用户要求时才生成额外文档。
 
 ## 项目约束接口
 
@@ -108,7 +126,8 @@ so / JNI / native 分析优先无头，详细规则见 `reference/native-analysi
 ## 产出与文件边界
 
 - 默认只给出对话结论，不自动创建正式报告。
-- 用户选择“不需要正式报告”时，在 `analysis-state.md` 记录，并且不自动调用报告技能；这不禁止生成用户即时要求的其他文档或必要的内部中间物。
+- 未要求正式报告时默认对话交付，不自动调用报告技能或创建状态文件；这不禁止生成用户即时要求的其他文档或必要的内部中间物。
 - 普通、专题或阶段报告叠加 `analysis-report`；多份材料的最终汇总叠加 `final-report`。
 - `.android-reverse/` 仅是本技能的默认内部中间物目录。用户指定路径、外部项目 plan、`项目规则.md`、上层调用技能和报告技能的文件规划优先级更高。
 - 不迁移、复制或重定向外部已规划的文件；内部状态只记录其引用路径。
+- 修改模式的产物必须写入新文件或独立输出目录，不覆盖用户提供的原始 APK、so 或证据。

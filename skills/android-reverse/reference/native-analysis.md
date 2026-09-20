@@ -2,7 +2,7 @@
 
 ## 触发条件
 
-出现以下任一情况时使用 IDA MCP，优先 `idalib-mcp`，不可用再用 GUI `ida`：
+出现以下任一情况时使用无头 IDA 服务 `idalib-mcp`：
 
 1. Java 层调用 `native` 方法。
 2. 发现 `System.loadLibrary` 或 so 加载逻辑。
@@ -22,28 +22,28 @@
 
 ## 工具选择
 
-1. 用户点名无头或 GUI 时，以用户指定为准；否则优先使用 `idalib-mcp`。
-2. 用户明确给出 so/二进制绝对路径时，可用 `idb_open` 直接打开；打开后输出文件名、路径和架构等可取得的身份信息。
-3. so 由已确认 APK 的 Java/JNI 调用链唯一定位时，可以直接使用无头 IDA，并说明来源；存在多个 ABI、多个同名 so 或来源不明确时，让用户选择。
-4. 当前会话没有 `idalib-mcp`，或 `idb_open` / 健康探测失败，再考虑 GUI `ida`。
-5. 回退 GUI 时，先输出当前数据库对应的文件、架构等信息，等待用户确认；不能因为 GUI 已打开某个 IDB 就直接开始分析。
-6. GUI IDA 由用户开启、切换和关闭。Agent 只在 GUI 可用期间通过 MCP 连接，不主动管理 GUI 生命周期。
-7. 数字进制转换用 `int_convert`，不要自行心算换算。
+1. 当前环境提供 `idalib-mcp` 时优先使用，工具命名空间由当前 Agent 宿主决定；不可用时可以选择经过验证的等价无头 native 分析工具，但不得探测、调用或接管 GUI IDA MCP。
+2. 用户明确给出 so/二进制绝对路径时，调用 `idb_open` 并显式设置 `mode="force_headless"`；打开后输出文件名、路径、架构等可取得的身份信息。
+3. so 由已确认 APK 的 Java/JNI 调用链唯一定位时，可以直接打开并说明来源；存在多个 ABI、多个同名 so 或来源不明确时，让用户选择。
+4. 调用 `idb_list` 确认可用 database/session，再用 `server_health` 检查自动分析和反编译器状态。
+5. 当前环境没有 `idalib-mcp`，或打开、健康探测失败时，先检查是否存在等价无头 native 分析能力；没有替代方案时暂停 native 分支并报告失败原因，不回退 GUI IDA。
+6. 数字进制转换优先使用服务提供的 `int_convert`；不可用时使用可审计的计算工具，不凭心算给出高风险结论。
 
 ## Session 所有权与生命周期
 
-IDA session 与 APK 没有强制对应关系。APK 切换不自动关闭 IDA session，也不自动切换目标 so。
+`idalib-mcp` session 与 APK 没有强制对应关系。APK 切换不自动关闭 session，也不自动切换目标 so。
 
 为每个可管理的 session/database 记录：
 
 - session/database 标识。
 - 目标二进制绝对路径。
-- `opened_by`：`agent` 或 `user/external`。
+- `opened_by`：固定为 `agent/headless`。
 - `related_apk`：可选，仅在存在明确 Java/JNI 关系时填写。
 - `purpose`：例如 JNI 链路或独立 so 分析。
-- `close_policy`：分支完成后关闭或保持打开。
+- `idle_ttl_sec`：无头 worker 的空闲退出时间。
+- `saved_idb_path`：可选，保存数据库后记录。
 
-Agent 可以关闭自己为了某个分析分支主动创建、且关闭策略明确的 session。用户主动打开、外部创建、用途不明或与当前 APK 无关的 session 不得因 APK 切换而关闭。
+Agent 不通过系统命令终止 worker。无头 worker 由 `idle_ttl_sec` 和服务端生命周期机制退出；需要保留分析成果时先使用服务提供的保存能力。
 
 ## 分析步骤
 
