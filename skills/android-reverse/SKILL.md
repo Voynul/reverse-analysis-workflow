@@ -1,11 +1,19 @@
 ---
 name: android-reverse
-description: 对 Android APK、DEX、Java/Kotlin、smali、运行时行为、网络协议及 native so/JNI 进行证据驱动的逆向分析，并在用户明确要求时执行 APK 修改、重建、签名和运行验收。用于 APK 分析、反编译、动态 Hook、抓包、算法还原、混淆理解、JNI/native 分析、自动化触发和授权样本修改；根据当前环境选择可用的无头工具，不强制生成正式报告。
+description: 对 Android 安装包、DEX、smali、so/JNI 及运行中目标进行逆向分析，包括反编译、混淆理解、动态 Hook、抓包、协议和算法还原，以及用户明确要求的 APK 修改、重建、签名和验收。不用于普通 Android 源码开发、源码审查、重构迁移、Gradle 修复或多个 demo 的源码整合；开发任务确需逆向取证时，仅用于该子任务。
 ---
 
 # Android Reverse
 
-使用本技能分析 Android APK 的行为、逻辑、功能实现、网络协议、运行时参数、返回值、加解密和 native 层逻辑。
+使用本技能对 Android 安装包、反编译产物及运行中应用开展逆向分析，还原行为、逻辑、功能实现、网络协议、运行时参数、返回值、加解密和 native 层逻辑。
+
+## 适用范围与触发边界
+
+按任务目的判断是否使用本技能。项目名称、目录历史，以及 Android、Java/Kotlin、保活、FCM、Manifest 或运行时等词，均不能单独作为触发依据。
+
+- 适用：从安装包、反编译产物、原应用运行现象或协议数据还原实现、条件和调用链。阅读反编译得到的 Java/Kotlin 仍属于逆向分析，无须每次重新反编译或进行 Hook。
+- 不适用：基于已有可编辑源码的常规开发、源码审查、重构、迁移、构建修复和 demo 源码整合。任务附带编译、安装、普通运行调试或参考历史逆向报告，也不足以触发本技能。
+- 混合任务：开发过程中确需对安装包、反编译产物或运行中目标进行逆向取证时，仅对该子任务使用本技能；开发部分按用户要求和项目开发规则执行。
 
 ## 职责边界
 
@@ -36,7 +44,7 @@ description: 对 Android APK、DEX、Java/Kotlin、smali、运行时行为、网
 
 ## 启动协议
 
-使用本技能前执行必要的最小启动检查：
+先核对上述适用范围；仅对适用的任务或子任务执行以下最小启动检查：
 
 1. 定位项目根目录；存在 `项目规则.md` 时先读取。
 2. 如果 `.android-reverse/analysis-state.md` 存在且与当前目标匹配，读取并恢复状态；简单任务不为此自动创建状态文件。
@@ -51,7 +59,7 @@ description: 对 Android APK、DEX、Java/Kotlin、smali、运行时行为、网
 
 | 场景 | 首选工具 | 补充工具 | 参考文档 |
 |---|---|---|---|
-| Java/Kotlin 逻辑、Manifest、调用链 | 无头 JADX 服务 `jadx-headless` | JEB、smali | `reference/static-analysis.md` |
+| 安装包内的 Java/Kotlin 反编译逻辑、Manifest、调用链 | 无头 JADX 服务 `jadx-headless` | JEB、smali | `reference/static-analysis.md` |
 | 参数、返回值、明文、分支、运行时调用栈 | Frida MCP | Frida CLI | `reference/dynamic-hook.md` |
 | 启动、点击、滑动、截图、触发流程 | mobile-mcp | ADB | `reference/mobile-automation.md` |
 | HTTP/HTTPS、WebSocket、HAR、接口字段 | reqable MCP | Hook 日志、解密结果 | `reference/network-traffic.md` |
