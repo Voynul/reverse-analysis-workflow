@@ -1,0 +1,1450 @@
+{
+  "schema": "android-reverse/local-source-integration-v1",
+  "source": "apk-reverse-codeberg-mirror local snapshot",
+  "source_fingerprint_sha256": "e055c2c8805fbd83c8ae6a823668871872d885f696a313c25901566cfc31d812",
+  "source_checkout_required": false,
+  "license": "scripts/offline/LICENSE.apk-reverse",
+  "principles": [
+    "经验与工具操作独立路由",
+    "来源测量不自动成为本技能或当前目标实测",
+    "不引入上游强制关卡/全量预检/默认安装",
+    "所有未打包实现均有方法去向与理由"
+  ],
+  "validation": {
+    "date": "2026-10-26",
+    "scope": "offline known-answer/parser/CLI fixture regression; no device, no live requests, no real target claims",
+    "passed": 210,
+    "skipped": 7,
+    "skipped_reasons": {
+      "unshipped_upstream_benchmark": 5,
+      "no_c_compiler": 2
+    },
+    "portability": "relocated directory on the same Windows/Python host: structural validation and the full offline suite passed",
+    "agent_with_without_evaluation": "not run"
+  },
+  "references": [
+    {
+      "source": "references/account-gates.md",
+      "source_sha256": "98cc2540e77aa1e8249c767d36382ca8cb1b7779693e7ff51a6caff319158181",
+      "decision": "adapted-and-integrated",
+      "targets": [
+        "reference/topics/accounts-limits.md"
+      ],
+      "reason": "合并客户端入口、会话与账户资源判别，不采用统一修改方案"
+    },
+    {
+      "source": "references/ad-removal.md",
+      "source_sha256": "a93246ef89d2670c645402df126f6adbaed4ddc5157ad63c089c1acaafb87799",
+      "decision": "adapted-and-integrated",
+      "targets": [
+        "reference/topics/ads-remote-config.md"
+      ],
+      "reason": "保留广告链、回调和影响范围，具体修改按用户目标选择"
+    },
+    {
+      "source": "references/advanced-unpacking.md",
+      "source_sha256": "083847cf0e9f29060f371934dcd1dc85fd53d328e78e1ed1d367ff135e833bed",
+      "decision": "adapted-and-integrated",
+      "targets": [
+        "reference/topics/unpacking.md"
+      ],
+      "reason": "整合恢复时机、dump质量和副作用，不把stub比例当结论"
+    },
+    {
+      "source": "references/byte-level-patching.md",
+      "source_sha256": "3f7c3bd2fa4b25767a6f564697d78370f790596397ffdff1395ea79ae666fca0",
+      "decision": "adapted-and-integrated",
+      "targets": [
+        "reference/topics/dex-patching.md",
+        "reference/patch-and-verify.md"
+      ],
+      "reason": "保留指令边界、字符串和等长审计，取消统一技术优先级"
+    },
+    {
+      "source": "references/code-virtualization-and-custom-linkers.md",
+      "source_sha256": "29ca8d9ecf1a083d79ca27785e6bd00fa963e99053c3fdfbcd4bc480af57e41a",
+      "decision": "adapted-and-integrated",
+      "targets": [
+        "reference/topics/native-loader.md",
+        "reference/vm-protection.md"
+      ],
+      "reason": "拆分加载器、检查器与解释器关系，排除目标特定重定向"
+    },
+    {
+      "source": "references/coverage-and-limits.md",
+      "source_sha256": "310a835b6e59d96ac9f29012edbfeadfdb8538f2a1bfbcd1f1fc4e6d83d06b91",
+      "decision": "adapted-and-integrated",
+      "targets": [
+        "reference/evidence-and-renaming.md",
+        "reference/tool-capabilities.md"
+      ],
+      "reason": "区分来源验证和目标事实，不继承封闭能力名单"
+    },
+    {
+      "source": "references/coverage/route-inventory.md",
+      "source_sha256": "bd9fc010ca60825b6f45471d98bcee331da9fe34dd3fb39cc420035c5bcbf02b",
+      "decision": "adapted-and-integrated",
+      "targets": [
+        "reference/experience-index.md",
+        "maintenance/migration.json"
+      ],
+      "reason": "转为可维护的覆盖映射，不作为任务前置分类"
+    },
+    {
+      "source": "references/dart-aot.md",
+      "source_sha256": "4557b4e3dafcb33f038d5fdf866375cfd1916bfd484a3f7fdef89ee683b27029",
+      "decision": "adapted-and-integrated",
+      "targets": [
+        "reference/flutter-dart.md"
+      ],
+      "reason": "保留snapshot/对象池定位，格式与ABI以目标验证"
+    },
+    {
+      "source": "references/desensitization-and-leak-scans.md",
+      "source_sha256": "83d307f9b03c705dbd92970dcbb3538c33e7fc9fbf197ed63962fd21e6def506",
+      "decision": "adapted-and-integrated",
+      "targets": [
+        "reference/evidence-and-renaming.md",
+        "reference/topics/cases.md"
+      ],
+      "reason": "保留分享副本与扫描边界，不删内部原始证据"
+    },
+    {
+      "source": "references/detection-and-anti-analysis.md",
+      "source_sha256": "9801f1d6379e14f7fc1d0f91f5310585e8869320bc2b3f68e562c146157de1d2",
+      "decision": "adapted-and-integrated",
+      "targets": [
+        "reference/topics/anti-analysis.md"
+      ],
+      "reason": "保留对照、归因和观测扰动，移除固定阶段与机械退出阈值"
+    },
+    {
+      "source": "references/dex-patching.md",
+      "source_sha256": "322260be80e4d2216df71883e3c16b5c48f460d5ab9b49f1bcc9ee1470ca8626",
+      "decision": "adapted-and-integrated",
+      "targets": [
+        "reference/topics/dex-patching.md"
+      ],
+      "reason": "按变更表达能力和风险选择技术，不强制dexlib2"
+    },
+    {
+      "source": "references/dexsql-sql-query-layer.md",
+      "source_sha256": "5caf61ae2fae5a7b3aeca7e6ac489b6d5da41ea8df88cf193db49ac9e2f28c29",
+      "decision": "adapted-and-integrated",
+      "targets": [
+        "reference/tools/offline.md",
+        "reference/static-analysis.md"
+      ],
+      "reason": "保留关联/聚合查询选项，不强制安装或替换MCP"
+    },
+    {
+      "source": "references/dynamic-frida.md",
+      "source_sha256": "a72f1faafbffc4081ffdc6056fbdda91d60c5891d4c040c187d9e2303b3d893f",
+      "decision": "adapted-and-integrated",
+      "targets": [
+        "reference/dynamic-hook.md",
+        "reference/tools/frida.md"
+      ],
+      "reason": "经验与操作拆分，保留时机与消息健康"
+    },
+    {
+      "source": "references/emulation-and-rpc.md",
+      "source_sha256": "2f95756413338d973426db0bc51484d09d23ee8959c91c2489b108e9ad9c9917",
+      "decision": "adapted-and-integrated",
+      "targets": [
+        "reference/topics/rpc-emulation.md",
+        "reference/tools/frida.md"
+      ],
+      "reason": "保留实现方式、状态和调用副作用，避免假定环境等价"
+    },
+    {
+      "source": "references/environment.md",
+      "source_sha256": "eca3cdd05f7326d2e612daed78bf2105d2a3a193d69250893d7ede2a0e3a31d5",
+      "decision": "adapted-and-integrated",
+      "targets": [
+        "reference/topics/device-environment.md",
+        "reference/tools/device.md"
+      ],
+      "reason": "按问题检查环境，保留设置和日志，不运行全量预检"
+    },
+    {
+      "source": "references/ete-diff-tracing.md",
+      "source_sha256": "1c4c2c80f3b375509f28d0c1393e97a64e7af4ce67478422720aa1faff84b4a4",
+      "decision": "adapted-and-integrated",
+      "targets": [
+        "reference/topics/hardware-tracing.md",
+        "reference/tools/specialists.md"
+      ],
+      "reason": "保留可选硬件与差分方法，不承诺设备生产端"
+    },
+    {
+      "source": "references/evidence-summary.md",
+      "source_sha256": "dd505acc7bc258dcd09be395ffc7a3858bb288552e908144d4b8e0b3fbd68712",
+      "decision": "adapted-and-integrated",
+      "targets": [
+        "reference/evidence-and-renaming.md",
+        "maintenance/migration.json"
+      ],
+      "reason": "保留来源追溯，未将上游实测标记成本地验证"
+    },
+    {
+      "source": "references/framework-runtimes.md",
+      "source_sha256": "cb2b3a778c8288e998f8739f2f8ab7fb3a33878dba0fed8172a5b9f712f3dec0",
+      "decision": "adapted-and-integrated",
+      "targets": [
+        "reference/package-recon.md",
+        "reference/react-native-hermes.md",
+        "reference/flutter-dart.md",
+        "reference/unity-il2cpp.md"
+      ],
+      "reason": "按功能确认混合运行时，保留现有React Native补充"
+    },
+    {
+      "source": "references/handoff-boundaries.md",
+      "source_sha256": "00c6423474ff523c2b19ea54be54a00b94a84250d07b90bf1e930ff51ec80fc6",
+      "decision": "adapted-and-integrated",
+      "targets": [
+        "reference/native-analysis.md",
+        "reference/experience-index.md"
+      ],
+      "reason": "保留跨层边界，不要求固定工具或另开技能"
+    },
+    {
+      "source": "references/hardware-sampling-and-crash.md",
+      "source_sha256": "17a4e6fe0a61ddfb33c940b054a3a75fd3e3126f69ce41acfae720d89a3ef6d5",
+      "decision": "adapted-and-integrated",
+      "targets": [
+        "reference/topics/hardware-tracing.md",
+        "reference/tools/offline.md"
+      ],
+      "reason": "区分采样、分支线索与离线地址符号化"
+    },
+    {
+      "source": "references/hardware-watchpoints.md",
+      "source_sha256": "46e5d39485bbfaa078b1bcec66922ed334cd6796f5506b73a1e0d98f481f0813",
+      "decision": "adapted-and-integrated",
+      "targets": [
+        "reference/topics/hardware-tracing.md"
+      ],
+      "reason": "保留控制点、线程和可见性边界，不称为绝对不可检测"
+    },
+    {
+      "source": "references/ida-so-debugging.md",
+      "source_sha256": "b94f70544fac71e1f7b21d0ec0e416e912ea3740a51d746fc9501c00c750a962",
+      "decision": "adapted-and-integrated",
+      "targets": [
+        "reference/topics/remote-debugging.md",
+        "reference/tools/specialists.md"
+      ],
+      "reason": "保留协议时序和映射，GUI流程改为可选协作"
+    },
+    {
+      "source": "references/il2cpp-protected-metadata.md",
+      "source_sha256": "331718a6f0265dbcdd69fbb09f22cd6a277fa999740feb83e09ed26e568e4862",
+      "decision": "adapted-and-integrated",
+      "targets": [
+        "reference/unity-il2cpp.md"
+      ],
+      "reason": "保留消费端与布局诊断，删除固定头长/映射序号假设"
+    },
+    {
+      "source": "references/java2c-and-jni-sinking.md",
+      "source_sha256": "fb192e528fe294f8033a6d47054e478ef41268ac8ef583ee83c0d66a797f179e",
+      "decision": "adapted-and-integrated",
+      "targets": [
+        "reference/package-recon.md",
+        "reference/native-analysis.md",
+        "reference/tools/offline.md"
+      ],
+      "reason": "多证据判断，探测指标不升级为确定保护类型"
+    },
+    {
+      "source": "references/js-ast-deobfuscation.md",
+      "source_sha256": "65e826d58dd2a192a8319f4b18bb8b08f0dcae0ad79c36ef4a29b466aa3e3d27",
+      "decision": "adapted-and-integrated",
+      "targets": [
+        "reference/topics/js-ast.md",
+        "reference/tools/offline.md"
+      ],
+      "reason": "保留绑定、纯度和求值语义，不把检测器当重写器"
+    },
+    {
+      "source": "references/jsvmp-recovery.md",
+      "source_sha256": "20c68cfdeae6f8a3366f9109909c589d6b25ba8f8aaaaa4b517ce175553ebd03",
+      "decision": "adapted-and-integrated",
+      "targets": [
+        "reference/topics/jsvmp.md"
+      ],
+      "reason": "保留JS特有语义与多种恢复深度，取消强制A/B/C升级"
+    },
+    {
+      "source": "references/kernel-and-environment-hardening.md",
+      "source_sha256": "a65d5126dddaf527ee90ec62e98f010cb6b18778931c64a23b981ed0da2903b0",
+      "decision": "adapted-and-integrated",
+      "targets": [
+        "reference/topics/kernel-observation.md"
+      ],
+      "reason": "保留执行层和依赖判断，不固化隐藏模块/版本阈值"
+    },
+    {
+      "source": "references/kernel-event-injection.md",
+      "source_sha256": "94ab73f7f1840f6c168a7e55c767da60e35be1199fa904c32e9871685de696ec",
+      "decision": "adapted-and-integrated",
+      "targets": [
+        "reference/topics/kernel-observation.md",
+        "reference/tools/specialists.md"
+      ],
+      "reason": "记录主动干预与验证层次，不将模板视为已运行驱动"
+    },
+    {
+      "source": "references/kotlin-name-recovery.md",
+      "source_sha256": "7099c337e5bd3ce5d585e9e286687abd9d8d48a399a2d8a0690f5695570a39a0",
+      "decision": "adapted-and-integrated",
+      "targets": [
+        "reference/topics/kotlin-names.md",
+        "reference/evidence-and-renaming.md"
+      ],
+      "reason": "名称为候选，记录原名，不承诺R8后全部可恢复"
+    },
+    {
+      "source": "references/linker-and-soinfo-repair.md",
+      "source_sha256": "7e498ef104884ab5bd83b62d75d994bd862ab7837ac3aaec14c047511971ee25",
+      "decision": "adapted-and-integrated",
+      "targets": [
+        "reference/topics/native-loader.md"
+      ],
+      "reason": "保留地址、重定位和dump形态，不复制soinfo常量或通用修复"
+    },
+    {
+      "source": "references/long-task-discipline.md",
+      "source_sha256": "69f6e7691346095dcaed033e3b1efcc6425a2670e2e4fc4f1e3ebfb0f5c497fd",
+      "decision": "adapted-and-integrated",
+      "targets": [
+        "reference/workspace-state.md",
+        "reference/workflow-gates.md"
+      ],
+      "reason": "保留已有可选状态与交接，不强制所有任务写文件"
+    },
+    {
+      "source": "references/lsposed-and-modules.md",
+      "source_sha256": "64898362e3c48523c9e6bfb323084721a1def7131d3cd9f4bb9777b72535f1f8",
+      "decision": "adapted-and-integrated",
+      "targets": [
+        "reference/topics/module-delivery.md"
+      ],
+      "reason": "作为用户允许的交付形式，不自动替换APK需求"
+    },
+    {
+      "source": "references/membership-and-limits.md",
+      "source_sha256": "7ff3b755035911915b0d34ad0d329d1c46460512445c816dacae441ee5baf250",
+      "decision": "adapted-and-integrated",
+      "targets": [
+        "reference/topics/accounts-limits.md"
+      ],
+      "reason": "区分本地显示、请求与真实授权"
+    },
+    {
+      "source": "references/native-and-so.md",
+      "source_sha256": "878366c930438469ccbb4f3cbea61e930d699c0ceec465f6d0ff1a6b6ac60512",
+      "decision": "adapted-and-integrated",
+      "targets": [
+        "reference/native-analysis.md",
+        "reference/topics/native-loader.md"
+      ],
+      "reason": "保留JNI、加载与调用语义，操作移至工具文档"
+    },
+    {
+      "source": "references/native-dbi-and-deobfuscation.md",
+      "source_sha256": "b26b2fc0d6a3ca73feb8512db0b2fde49e291426a20f39d5216d6c49abdd0202",
+      "decision": "adapted-and-integrated",
+      "targets": [
+        "reference/topics/native-tracing.md"
+      ],
+      "reason": "保留覆盖、差分和扰动，不强制软件跟踪顺序"
+    },
+    {
+      "source": "references/native-tamper-and-suicide.md",
+      "source_sha256": "46f95e76e558ce1929b96228dc88348643bcc20aeb32cfab72fe654b34e4fe2f",
+      "decision": "adapted-and-integrated",
+      "targets": [
+        "reference/topics/native-tamper.md"
+      ],
+      "reason": "归因终止与业务继续，不统一打ret或阻断退出"
+    },
+    {
+      "source": "references/native-vm-recovery.md",
+      "source_sha256": "08fbcd5ab8086915cfb9df9327a8b18379aa4ed2bf5691e800fd04379b08c866",
+      "decision": "adapted-and-integrated",
+      "targets": [
+        "reference/vm-protection.md",
+        "reference/topics/native-tracing.md"
+      ],
+      "reason": "保留状态、切片和语义验证，不要求完整恢复ISA"
+    },
+    {
+      "source": "references/on-device-tooling.md",
+      "source_sha256": "7ef275001f3fa09a8a8946eeb18881c9ccfad9156d71f8409f9469b1241986f4",
+      "decision": "adapted-and-integrated",
+      "targets": [
+        "reference/topics/on-device.md",
+        "reference/tools/device.md"
+      ],
+      "reason": "按实际接口选择设备侧路线，不声称MCP已连接"
+    },
+    {
+      "source": "references/packers.md",
+      "source_sha256": "818e76243bebbb625324fa1c4923821553564f3bb9cf0415a1e1b2bf84991716",
+      "decision": "adapted-and-integrated",
+      "targets": [
+        "reference/topics/unpacking.md",
+        "reference/topics/native-loader.md"
+      ],
+      "reason": "保留保护识别和依赖分离，不先假定完整脱壳必要"
+    },
+    {
+      "source": "references/patch-audit.md",
+      "source_sha256": "578053db400989347df6053eb1a603d88456ba6ec4acf0b401fcec2cd47c7566",
+      "decision": "adapted-and-integrated",
+      "targets": [
+        "reference/patch-and-verify.md",
+        "reference/topics/dex-patching.md"
+      ],
+      "reason": "按声明目标审计，等长不漏报，局部扫描不替代verifier"
+    },
+    {
+      "source": "references/pitfalls.md",
+      "source_sha256": "9b8917917211b3a687fdbdf95664db1644f1bf0af6a6c75a6bb808a05f685fe0",
+      "decision": "adapted-and-integrated",
+      "targets": [
+        "reference/topics/failure-catalog.md"
+      ],
+      "reason": "50条症状逐项路由，不把案例症状直接写成根因"
+    },
+    {
+      "source": "references/precedents/flutter-plus-shell-case-1.md",
+      "source_sha256": "fff8f8956f7f7d4b82791c14cff5bd785f64e9365698482f9c93ecede33f51e8",
+      "decision": "adapted-and-integrated",
+      "targets": [
+        "reference/topics/cases.md"
+      ],
+      "reason": "抽取多运行时、生命周期与退出归因经验，不继承目标事实"
+    },
+    {
+      "source": "references/precedents/frida-spawn-hangs-zero-events-case-2.md",
+      "source_sha256": "5aa28cfd116e0afc6174487d45d1c1c211947a6bb62fcb8d357727357fbd2df1",
+      "decision": "adapted-and-integrated",
+      "targets": [
+        "reference/topics/cases.md"
+      ],
+      "reason": "保留暂停、安装与事件链路的反例"
+    },
+    {
+      "source": "references/precedents/l1-equal-length-patch-case-4.md",
+      "source_sha256": "ea030b086f1e15310595d2da878ea5b1fcaafe3f291780837dd1725d68a35150",
+      "decision": "adapted-and-integrated",
+      "targets": [
+        "reference/topics/cases.md"
+      ],
+      "reason": "保留实际字节与同流程对照"
+    },
+    {
+      "source": "references/precedents/logd-broken-module-never-ran-case-3.md",
+      "source_sha256": "5d4e25f37db2a9ee02489f7943056a6307b4b8f10ae6d70484df3a2687555979",
+      "decision": "adapted-and-integrated",
+      "targets": [
+        "reference/topics/cases.md"
+      ],
+      "reason": "区分日志通道、模块加载与方法执行"
+    },
+    {
+      "source": "references/precedents/manual-grep-finds-what-nobody-grepped-case-5.md",
+      "source_sha256": "d751ee40e88a6bdba54e2977a13b15f88bbe0de40ef1dc7e0e01fbf95d65850d",
+      "decision": "adapted-and-integrated",
+      "targets": [
+        "reference/topics/cases.md"
+      ],
+      "reason": "保留未命中边界与人工复核，不声称扫描完整"
+    },
+    {
+      "source": "references/precedents/README.md",
+      "source_sha256": "82d0560aa3b789eba7316334d5f2c3cccd38fa51115447e1cbc40cd94faf6984",
+      "decision": "adapted-and-integrated",
+      "targets": [
+        "reference/topics/cases.md"
+      ],
+      "reason": "案例模板变为可选材料，不创建额外README"
+    },
+    {
+      "source": "references/protocol-reverse.md",
+      "source_sha256": "6b4c565c53d87af9a1a684c266e5b05797552cd365fdea6917b4508d04faeb52",
+      "decision": "adapted-and-integrated",
+      "targets": [
+        "reference/topics/protocols.md",
+        "reference/topics/tls.md"
+      ],
+      "reason": "保留wire/schema/framing/状态链和密码候选，操作独立"
+    },
+    {
+      "source": "references/python-bytecode-recovery.md",
+      "source_sha256": "c156a09c1d7034c279bcedc2fb03d9d385d8b056766327f225f17a81dd85ae55",
+      "decision": "adapted-and-integrated",
+      "targets": [
+        "reference/topics/python-payload.md"
+      ],
+      "reason": "仅Android关联载荷，格式按版本核对"
+    },
+    {
+      "source": "references/rasc-and-droidsaw.md",
+      "source_sha256": "9b595564d57736045f3d54885537006347c2bcc1a92c62b0d6eb43535521b6a1",
+      "decision": "adapted-and-integrated",
+      "targets": [
+        "reference/tools/offline.md",
+        "reference/static-analysis.md"
+      ],
+      "reason": "保留可选索引与解析边界，不自动克隆/构建"
+    },
+    {
+      "source": "references/recon.md",
+      "source_sha256": "0d6a67113fc384fb3a4cd8c946dc9fe3ab5348ca41d6c1421842c3bfc432e3e8",
+      "decision": "adapted-and-integrated",
+      "targets": [
+        "reference/package-recon.md",
+        "reference/static-analysis.md"
+      ],
+      "reason": "保留身份、控制层与入口，不规定固定全量侦察"
+    },
+    {
+      "source": "references/repack-and-sign.md",
+      "source_sha256": "84ea7eb05f3b42c9ed0d255b3c15a565473a4cea4c42a2304f1219e46381d67d",
+      "decision": "adapted-and-integrated",
+      "targets": [
+        "reference/patch-and-verify.md",
+        "reference/tools/apk.md"
+      ],
+      "reason": "保留归档与签名，纠正-s/-r和过度泛化"
+    },
+    {
+      "source": "references/routing.md",
+      "source_sha256": "df3db3457a8d49d104c7c19a6a4b68bc39d384836ab374d6f749b05a4390689d",
+      "decision": "adapted-and-integrated",
+      "targets": [
+        "reference/experience-index.md",
+        "reference/tool-capabilities.md"
+      ],
+      "reason": "经验路由和工具路由独立，不重复强制症状流程"
+    },
+    {
+      "source": "references/runtime-data.md",
+      "source_sha256": "bf247e60879283fd1d0da8b9b34ce8d4eec870cd4c1907a07a710baa907b2ace",
+      "decision": "adapted-and-integrated",
+      "targets": [
+        "reference/topics/runtime-data.md"
+      ],
+      "reason": "保留类型、缓存、写回和持续性，不默认锁文件"
+    },
+    {
+      "source": "references/server-api.md",
+      "source_sha256": "47a7748aff9bd49b871bd49aece7773910b452b3405c0239344cacc3ffa277a1",
+      "decision": "adapted-and-integrated",
+      "targets": [
+        "reference/topics/accounts-limits.md",
+        "reference/network-traffic.md"
+      ],
+      "reason": "区分客户端构造与业务权限，线上动作不自动执行"
+    },
+    {
+      "source": "references/server-config-and-updates.md",
+      "source_sha256": "19818c34ba7c3e4c9f982c4eafff97427507c787b9028025fd8b7b848b32c2a4",
+      "decision": "adapted-and-integrated",
+      "targets": [
+        "reference/topics/ads-remote-config.md",
+        "reference/topics/updates.md"
+      ],
+      "reason": "保留多层配置与缓存，修改范围按目标"
+    },
+    {
+      "source": "references/signature-derived-keys.md",
+      "source_sha256": "7ba3a53dd1ed728e449d220e879f9ffe044e14ab45058626d5276c261c16adce",
+      "decision": "adapted-and-integrated",
+      "targets": [
+        "reference/algorithm-validation.md",
+        "reference/patch-and-verify.md"
+      ],
+      "reason": "保留证书输入溯源，不统一硬编码原证书"
+    },
+    {
+      "source": "references/split-apk.md",
+      "source_sha256": "261097c29aa10dbd3ed67e34725bce8914d2c44c6ff4efb2f1481823271ae82c",
+      "decision": "adapted-and-integrated",
+      "targets": [
+        "reference/topics/split-packages.md"
+      ],
+      "reason": "保留集合身份与依赖，不把合并当简单追加条目"
+    },
+    {
+      "source": "references/system-ipc-audit.md",
+      "source_sha256": "da3943a7df1e7b94fa9159bcbb5ab4cb45a7db12cb85eecee3a4002dc87c66e5",
+      "decision": "adapted-and-integrated",
+      "targets": [
+        "reference/topics/system-ipc.md"
+      ],
+      "reason": "保留系统边界，按目标平台验证接口"
+    },
+    {
+      "source": "references/third-party-builds.md",
+      "source_sha256": "f9aaae39c611b0fd7791cb996e84a7f7a62329d603f8585e266716a2e61104da",
+      "decision": "adapted-and-integrated",
+      "targets": [
+        "reference/topics/third-party-builds.md"
+      ],
+      "reason": "比较结构与行为，差异不能直接判安全或恶意"
+    },
+    {
+      "source": "references/tls-and-cert.md",
+      "source_sha256": "ff60610054684019c8038d9d32fa7f4f268bd912a313986d1c959057d513b412",
+      "decision": "adapted-and-integrated",
+      "targets": [
+        "reference/topics/tls.md"
+      ],
+      "reason": "分开传输、证书、信任和业务错误，不默认放宽验证"
+    },
+    {
+      "source": "references/toolchain.md",
+      "source_sha256": "3697248d0886bbe03d673d51f610136f5d819c34eb87ffbff326746ff108866e",
+      "decision": "adapted-and-integrated",
+      "targets": [
+        "reference/tool-capabilities.md",
+        "reference/tools/offline.md",
+        "reference/tools/specialists.md"
+      ],
+      "reason": "保留实现候选，取消工具强绑定、全量预检和默认安装"
+    },
+    {
+      "source": "references/unity-runtime.md",
+      "source_sha256": "c28965df3a57646459ed448345c46addd40de6e3dea01764e49ab4f9aeaafb08",
+      "decision": "adapted-and-integrated",
+      "targets": [
+        "reference/unity-il2cpp.md"
+      ],
+      "reason": "保留后端、产物和输出边界，不继承GUI与桌面替换前提"
+    },
+    {
+      "source": "references/updates-and-forced-upgrade.md",
+      "source_sha256": "5f117e5f54848a57eac4676cb5e437548bca80cb58cd723f914b0fce7bc58522",
+      "decision": "adapted-and-integrated",
+      "targets": [
+        "reference/topics/updates.md"
+      ],
+      "reason": "仅相关任务分析更新，不要求所有构建关闭升级"
+    },
+    {
+      "source": "references/verification.md",
+      "source_sha256": "228db84c50834910a30c0d53a23c46696feab718915d44390a9bdd6cc0940cfd",
+      "decision": "adapted-and-integrated",
+      "targets": [
+        "reference/patch-and-verify.md",
+        "reference/evidence-and-renaming.md"
+      ],
+      "reason": "完成条件随交付物，不用APK验收限制普通分析"
+    },
+    {
+      "source": "references/vm-protector-analysis.md",
+      "source_sha256": "a021241eb10af94a95160040e00133d3b74489b06da8abf024fd8f5ae51aaa2d",
+      "decision": "adapted-and-integrated",
+      "targets": [
+        "reference/vm-protection.md"
+      ],
+      "reason": "保留语义锚定，x86实例不当ARM固定规则"
+    },
+    {
+      "source": "references/vmp-differential-analysis.md",
+      "source_sha256": "f8f560727c672f6f432c48a263995a39905a988f6b0a0f56afb4307835f0baac",
+      "decision": "adapted-and-integrated",
+      "targets": [
+        "reference/vm-protection.md",
+        "reference/topics/native-tracing.md"
+      ],
+      "reason": "保留转换假设与独立验证，不把骨架当可重建代码"
+    }
+  ],
+  "code": [
+    {
+      "source": "scripts/anti_detect_probe.js",
+      "source_sha256": "4c8328a74e1fb470d242d33438434bd2bcebb606557425df85a59284647c88ad",
+      "decision": "method-retained-implementation-not-bundled",
+      "targets": [
+        "reference/tools/frida.md",
+        "reference/topics/anti-analysis.md",
+        "reference/topics/native-tracing.md"
+      ],
+      "reason": "按当前目标生成最小观察/干预，不默认加载上游大型探针与退出改写脚本"
+    },
+    {
+      "source": "scripts/apk_diff.py",
+      "source_sha256": "ae37529c7a82963da4e00e9bdd46617d29a609c9f0862399b47972c75e0ccc6e",
+      "decision": "ported-offline",
+      "targets": [
+        "scripts/offline/apk_diff.py",
+        "reference/tools/offline.md"
+      ],
+      "reason": "标准库离线解析/定位/差分能力已迁入并运行隔离回归和CLI检查",
+      "ported_sha256": "949d6df03869d5610b64b88912883d534eda6ad0e4e38d04647ec4d5e324597e"
+    },
+    {
+      "source": "scripts/blob_decode.py",
+      "source_sha256": "f0f6d39b87e881fc4f29cab07adecefcf847f07117f63700a4c248639f9064d4",
+      "decision": "ported-offline",
+      "targets": [
+        "scripts/offline/blob_decode.py",
+        "reference/tools/offline.md"
+      ],
+      "reason": "标准库离线解析/定位/差分能力已迁入并运行隔离回归和CLI检查",
+      "ported_sha256": "f0f6d39b87e881fc4f29cab07adecefcf847f07117f63700a4c248639f9064d4"
+    },
+    {
+      "source": "scripts/capabilities.py",
+      "source_sha256": "96bb0a0c44947141a8697cd673a45dccd4c25b6db93326373805bee12e653f15",
+      "decision": "method-retained-implementation-not-bundled",
+      "targets": [
+        "reference/tool-capabilities.md",
+        "reference/tools/device.md",
+        "reference/topics/device-environment.md"
+      ],
+      "reason": "按需发现与已有MCP/CLI操作替代，不维护上游全量预检和设备外壳"
+    },
+    {
+      "source": "scripts/coldstart.py",
+      "source_sha256": "9449ae420d63a8db186294d7758de1678046bb0329ce16931ea75243f569f052",
+      "decision": "method-retained-implementation-not-bundled",
+      "targets": [
+        "reference/mobile-automation.md",
+        "reference/tools/device.md"
+      ],
+      "reason": "现有mobile-mcp/ADB已覆盖操作，补充样本和截图解释而不复制设备助手"
+    },
+    {
+      "source": "scripts/dart_disasm.py",
+      "source_sha256": "f619c370baa2bf982928d039d050d2576ec8b457b10cf992407da440baa2dfe7",
+      "decision": "method-retained-implementation-not-bundled",
+      "targets": [
+        "reference/flutter-dart.md",
+        "reference/tools/specialists.md"
+      ],
+      "reason": "解析与ABI/格式绑定，保留算法与覆盖判断；选择当前兼容前端，不把样本解析器当通用工具"
+    },
+    {
+      "source": "scripts/dart_pool_strings.py",
+      "source_sha256": "c1d72666ddc9be38b88b52a87a9f3473ef6ef9f769f6d0244bfc2bf3a93826f5",
+      "decision": "method-retained-implementation-not-bundled",
+      "targets": [
+        "reference/flutter-dart.md",
+        "reference/tools/specialists.md"
+      ],
+      "reason": "解析与ABI/格式绑定，保留算法与覆盖判断；选择当前兼容前端，不把样本解析器当通用工具"
+    },
+    {
+      "source": "scripts/dart_pprefs.py",
+      "source_sha256": "c85915d85a4b39ee0f2e70074ec6030f417ccf56997d4b8f0ba0a31601c2b017",
+      "decision": "method-retained-implementation-not-bundled",
+      "targets": [
+        "reference/flutter-dart.md",
+        "reference/tools/specialists.md"
+      ],
+      "reason": "解析与ABI/格式绑定，保留算法与覆盖判断；选择当前兼容前端，不把样本解析器当通用工具"
+    },
+    {
+      "source": "scripts/datastore_inject.py",
+      "source_sha256": "45b9b5a21f50795c067bfdb4033b64b8f0464743b3cf1abeed6c65943278529f",
+      "decision": "method-retained-implementation-not-bundled",
+      "targets": [
+        "reference/topics/runtime-data.md",
+        "reference/topics/tls.md",
+        "reference/algorithm-validation.md",
+        "reference/tools/network.md"
+      ],
+      "reason": "设备写入、网络动作与证书实际值需要按任务确定，保留方法并使用当前受控工具"
+    },
+    {
+      "source": "scripts/device_shell.py",
+      "source_sha256": "0fc03c98d08dcc8044bd720c214006459f2542d19cc9ffa26e7e3a6511296b38",
+      "decision": "method-retained-implementation-not-bundled",
+      "targets": [
+        "reference/tool-capabilities.md",
+        "reference/tools/device.md",
+        "reference/topics/device-environment.md"
+      ],
+      "reason": "按需发现与已有MCP/CLI操作替代，不维护上游全量预检和设备外壳"
+    },
+    {
+      "source": "scripts/devsh.py",
+      "source_sha256": "2a055555017c272c4422fd88ffd9a0260bd32a1be401730723215bb1f35749d0",
+      "decision": "method-retained-implementation-not-bundled",
+      "targets": [
+        "reference/tool-capabilities.md",
+        "reference/tools/device.md",
+        "reference/topics/device-environment.md"
+      ],
+      "reason": "按需发现与已有MCP/CLI操作替代，不维护上游全量预检和设备外壳"
+    },
+    {
+      "source": "scripts/dex_check_verifier.py",
+      "source_sha256": "bc852bcd5cc977a40d9ad90bd7cf57fca9ffeb31de8ddfdeab3999d104c68455",
+      "decision": "method-retained-implementation-not-bundled",
+      "targets": [
+        "reference/tools/offline.md",
+        "reference/topics/dex-patching.md"
+      ],
+      "reason": "索引引用可用现有工具，局部verifier实现不完整；保留方法不发布该实现"
+    },
+    {
+      "source": "scripts/dex_classdiff.py",
+      "source_sha256": "50b652b7c69f5372e5b8520b514cf5c7fedec8ce6125d126a03d266f8568b42b",
+      "decision": "ported-offline",
+      "targets": [
+        "scripts/offline/dex_classdiff.py",
+        "reference/tools/offline.md"
+      ],
+      "reason": "标准库离线解析/定位/差分能力已迁入并运行隔离回归和CLI检查",
+      "ported_sha256": "3aa70ad41236ce97956f07584a070c86414b03f948a8943fd89ae6dccf1caf8c"
+    },
+    {
+      "source": "scripts/dex_dump_validate.py",
+      "source_sha256": "274acb9e86514e0856b9348df88c7e476c4f8369f2d1cba1893029647d505a29",
+      "decision": "ported-offline",
+      "targets": [
+        "scripts/offline/dex_dump_validate.py",
+        "reference/tools/offline.md"
+      ],
+      "reason": "标准库离线解析/定位/差分能力已迁入并运行隔离回归和CLI检查",
+      "ported_sha256": "a234be4eb601b852228418a418f81163ea12c79dfbdca9b6fd174f715010ab84"
+    },
+    {
+      "source": "scripts/dex_find_insn.py",
+      "source_sha256": "0b4b29f71a75de4adde53a693c2e1ae2118ecffe9f3171c857892962e87998b5",
+      "decision": "ported-offline",
+      "targets": [
+        "scripts/offline/dex_find_insn.py",
+        "reference/tools/offline.md"
+      ],
+      "reason": "标准库离线解析/定位/差分能力已迁入并运行隔离回归和CLI检查",
+      "ported_sha256": "0b4b29f71a75de4adde53a693c2e1ae2118ecffe9f3171c857892962e87998b5"
+    },
+    {
+      "source": "scripts/dex_mem_scan.py",
+      "source_sha256": "e906d806e3831a1caca8e485c099497e8b4d71b1323f393c7e1b75463232ea6e",
+      "decision": "method-retained-implementation-not-bundled",
+      "targets": [
+        "reference/topics/unpacking.md",
+        "reference/tools/device.md"
+      ],
+      "reason": "设备内存读取依赖权限和窗口，保留取得与质量判断，不默认附带设备读写器"
+    },
+    {
+      "source": "scripts/dex_patch_bytes.py",
+      "source_sha256": "66386df3c3fbf4675008c004b4604af1efc9b3ca6dc50d89efe11f6d10525717",
+      "decision": "method-retained-implementation-not-bundled",
+      "targets": [
+        "reference/topics/dex-patching.md",
+        "reference/tools/apk.md"
+      ],
+      "reason": "保留修改技术，通过任务选定的可靠构建/修改工具实现；不复制未在本环境验证的写操作实现"
+    },
+    {
+      "source": "scripts/dex_strings.py",
+      "source_sha256": "10d1e8cdc043a25b0e35145da8787ca2263506b9d723f74e645a19c13558d8ca",
+      "decision": "ported-offline",
+      "targets": [
+        "scripts/offline/dex_strings.py",
+        "reference/tools/offline.md"
+      ],
+      "reason": "标准库离线解析/定位/差分能力已迁入并运行隔离回归和CLI检查",
+      "ported_sha256": "10d1e8cdc043a25b0e35145da8787ca2263506b9d723f74e645a19c13558d8ca"
+    },
+    {
+      "source": "scripts/dex_strpatch.py",
+      "source_sha256": "a63b373047ddf33691f708162d7c75d423d72a838594fa120f3edda47134dbf1",
+      "decision": "method-retained-implementation-not-bundled",
+      "targets": [
+        "reference/topics/dex-patching.md",
+        "reference/tools/apk.md"
+      ],
+      "reason": "保留修改技术，通过任务选定的可靠构建/修改工具实现；不复制未在本环境验证的写操作实现"
+    },
+    {
+      "source": "scripts/dexpatch/PatchMethod.java",
+      "source_sha256": "142cc0b81fe4269030c12c0902581064949bf867e021fabe7d4f9fefdf1ac733",
+      "decision": "method-retained-implementation-not-bundled",
+      "targets": [
+        "reference/topics/dex-patching.md",
+        "reference/tools/apk.md"
+      ],
+      "reason": "保留修改技术，通过任务选定的可靠构建/修改工具实现；不复制未在本环境验证的写操作实现"
+    },
+    {
+      "source": "scripts/dexpatch/PatchMethodExample.java",
+      "source_sha256": "0668e03a42f717259232732680d4b9059bb53631baf451fcd7f941c4a1ba7fbe",
+      "decision": "method-retained-implementation-not-bundled",
+      "targets": [
+        "reference/topics/dex-patching.md",
+        "reference/tools/apk.md"
+      ],
+      "reason": "保留修改技术，通过任务选定的可靠构建/修改工具实现；不复制未在本环境验证的写操作实现"
+    },
+    {
+      "source": "scripts/dexutil.py",
+      "source_sha256": "6d578966dc5c44f40d173263db32db697c9a18e6b5852f4df23efbd50675928a",
+      "decision": "ported-offline",
+      "targets": [
+        "scripts/offline/dexutil.py",
+        "reference/tools/offline.md"
+      ],
+      "reason": "标准库离线解析/定位/差分能力已迁入并运行隔离回归和CLI检查",
+      "ported_sha256": "fe107d1d8376d227faf6bfc63d485f1edbed58cdd9ed912656703515ad82e0db"
+    },
+    {
+      "source": "scripts/doctor.py",
+      "source_sha256": "5138e6bc3a0791c4343b4395eb52ab0580a20be7f491ab8a0fb456343b6cebed",
+      "decision": "method-retained-implementation-not-bundled",
+      "targets": [
+        "reference/tool-capabilities.md",
+        "reference/tools/device.md",
+        "reference/topics/device-environment.md"
+      ],
+      "reason": "按需发现与已有MCP/CLI操作替代，不维护上游全量预检和设备外壳"
+    },
+    {
+      "source": "scripts/elf_plt.py",
+      "source_sha256": "a1c26d2ab7f480842503d14dc447449c626393aeb9c3313c3094a1548ad9591d",
+      "decision": "method-retained-implementation-not-bundled",
+      "targets": [
+        "reference/topics/native-loader.md",
+        "reference/topics/native-tamper.md",
+        "reference/tools/idalib.md"
+      ],
+      "reason": "保留映射/调用/终止诊断，选实际native与设备工具；不承诺未验收的采集或扫描实现"
+    },
+    {
+      "source": "scripts/ete_capture.py",
+      "source_sha256": "9ab39e104be7fe082c16921907e31760a729e498752b25a133a873a06f38aa87",
+      "decision": "method-retained-implementation-not-bundled",
+      "targets": [
+        "reference/topics/hardware-tracing.md",
+        "reference/vm-protection.md",
+        "reference/tools/specialists.md"
+      ],
+      "reason": "保留高级方法与验证前提，不把生成/夹具测试等同真实设备或保护平台能力"
+    },
+    {
+      "source": "scripts/find_refs.py",
+      "source_sha256": "8011820f78febcd7fa7b1e108d38028fe96d795bc4d196ae10651c204f48db61",
+      "decision": "method-retained-implementation-not-bundled",
+      "targets": [
+        "reference/tools/offline.md",
+        "reference/topics/dex-patching.md"
+      ],
+      "reason": "索引引用可用现有工具，局部verifier实现不完整；保留方法不发布该实现"
+    },
+    {
+      "source": "scripts/frida_probe.js",
+      "source_sha256": "64ca0428e586f606ee25011fef4a88af0734ae0b910a0cebde0c4f311f2437f6",
+      "decision": "method-retained-implementation-not-bundled",
+      "targets": [
+        "reference/tools/frida.md",
+        "reference/topics/anti-analysis.md",
+        "reference/topics/native-tracing.md"
+      ],
+      "reason": "按当前目标生成最小观察/干预，不默认加载上游大型探针与退出改写脚本"
+    },
+    {
+      "source": "scripts/frida_rpc_serve.py",
+      "source_sha256": "2d59822b7c14b8cfb756563344627a955539677d1353db42bfcdb0d2009f9dfb",
+      "decision": "method-retained-implementation-not-bundled",
+      "targets": [
+        "reference/topics/rpc-emulation.md",
+        "reference/tools/frida.md"
+      ],
+      "reason": "保留RPC边界，按宿主当前接口实现，避免固定设备会话与监听器"
+    },
+    {
+      "source": "scripts/grab_crash.py",
+      "source_sha256": "d040ad9f01e21a4f91e36e436ca680201036b66ba26ae3fd53b0338c8a5fcd40",
+      "decision": "method-retained-implementation-not-bundled",
+      "targets": [
+        "reference/topics/native-loader.md",
+        "reference/topics/native-tamper.md",
+        "reference/tools/idalib.md"
+      ],
+      "reason": "保留映射/调用/终止诊断，选实际native与设备工具；不承诺未验收的采集或扫描实现"
+    },
+    {
+      "source": "scripts/hook_patch_only.js",
+      "source_sha256": "9e0ca8631819a99d7292ce0526bd4fe176f67a02a420bfc8b18eb1a29e43da30",
+      "decision": "method-retained-implementation-not-bundled",
+      "targets": [
+        "reference/tools/frida.md",
+        "reference/topics/anti-analysis.md",
+        "reference/topics/native-tracing.md"
+      ],
+      "reason": "按当前目标生成最小观察/干预，不默认加载上游大型探针与退出改写脚本"
+    },
+    {
+      "source": "scripts/hw_watch.py",
+      "source_sha256": "486b84c835c233bce26fda3e6e8916eef9214602ac345d17eb6a80a9fdfcbe2f",
+      "decision": "method-retained-implementation-not-bundled",
+      "targets": [
+        "reference/topics/hardware-tracing.md",
+        "reference/vm-protection.md",
+        "reference/tools/specialists.md"
+      ],
+      "reason": "保留高级方法与验证前提，不把生成/夹具测试等同真实设备或保护平台能力"
+    },
+    {
+      "source": "scripts/install_test.py",
+      "source_sha256": "4f92526327f36880e4e5b4e18caccf19918a42aa706c85f669557245c6c3f58d",
+      "decision": "method-retained-implementation-not-bundled",
+      "targets": [
+        "reference/tools/apk.md",
+        "reference/tools/device.md"
+      ],
+      "reason": "使用现有构建/签名和设备能力，避免维护重复归档与安装流水线"
+    },
+    {
+      "source": "scripts/java2c_probe.py",
+      "source_sha256": "d1f7b89bd234c1f03c9cd727d0f8304e8363368d72912338ff08e002e559681d",
+      "decision": "ported-offline",
+      "targets": [
+        "scripts/offline/java2c_probe.py",
+        "reference/tools/offline.md"
+      ],
+      "reason": "标准库离线解析/定位/差分能力已迁入并运行隔离回归和CLI检查",
+      "ported_sha256": "86376ddfbc07e355f050021c6f96d996f1c2562cc81af12d9af50b177e381910"
+    },
+    {
+      "source": "scripts/js_obf_detect.py",
+      "source_sha256": "4bd372b941c00d8d11b0aa26aebb104027af0e76e4b4106dd9b42c5298bbf35a",
+      "decision": "ported-offline",
+      "targets": [
+        "scripts/offline/js_obf_detect.py",
+        "reference/tools/offline.md"
+      ],
+      "reason": "标准库离线解析/定位/差分能力已迁入并运行隔离回归和CLI检查",
+      "ported_sha256": "4bd372b941c00d8d11b0aa26aebb104027af0e76e4b4106dd9b42c5298bbf35a"
+    },
+    {
+      "source": "scripts/jsvmp_loader_decode.py",
+      "source_sha256": "978d3373c3d044c582167a8b603e3398cf7fcceae69cda77c395f7adba97cc69",
+      "decision": "ported-offline",
+      "targets": [
+        "scripts/offline/jsvmp_loader_decode.py",
+        "reference/tools/offline.md"
+      ],
+      "reason": "标准库离线解析/定位/差分能力已迁入并运行隔离回归和CLI检查",
+      "ported_sha256": "978d3373c3d044c582167a8b603e3398cf7fcceae69cda77c395f7adba97cc69"
+    },
+    {
+      "source": "scripts/kernel_instrument_scaffold.py",
+      "source_sha256": "7a9d0b9c804273e760f5019d2670aa2e62af046bc2cb5b6bd392be86c947e1a4",
+      "decision": "method-retained-implementation-not-bundled",
+      "targets": [
+        "reference/topics/module-delivery.md",
+        "reference/topics/kernel-observation.md",
+        "reference/topics/on-device.md"
+      ],
+      "reason": "作为可选实现路线，未打包未实际验证的设备/内核生成器和连接器"
+    },
+    {
+      "source": "scripts/kernelsu_syscall_mask.py",
+      "source_sha256": "f59a9573baa7d80730ece4ef10f642e43dd326818c5e47e63d7d0c83637bd403",
+      "decision": "method-retained-implementation-not-bundled",
+      "targets": [
+        "reference/topics/module-delivery.md",
+        "reference/topics/kernel-observation.md",
+        "reference/topics/on-device.md"
+      ],
+      "reason": "作为可选实现路线，未打包未实际验证的设备/内核生成器和连接器"
+    },
+    {
+      "source": "scripts/kotlin_name_recovery.py",
+      "source_sha256": "a1b4b14c41d53d726a99be763135d8613efe57debfd86fa825bb1ba30ec19512",
+      "decision": "ported-offline",
+      "targets": [
+        "scripts/offline/kotlin_name_recovery.py",
+        "reference/tools/offline.md"
+      ],
+      "reason": "标准库离线解析/定位/差分能力已迁入并运行隔离回归和CLI检查",
+      "ported_sha256": "1b9f5e1ddbae9ccde2bf1ce602433284fe5cd9bb82ce945f219651ea66cc5aa3"
+    },
+    {
+      "source": "scripts/lib_map.py",
+      "source_sha256": "6037331fac2ecd2cfdbc52926cc0bd47a4a2e16fc913cfa48631b05b411b0f5d",
+      "decision": "method-retained-implementation-not-bundled",
+      "targets": [
+        "reference/topics/native-loader.md",
+        "reference/topics/native-tamper.md",
+        "reference/tools/idalib.md"
+      ],
+      "reason": "保留映射/调用/终止诊断，选实际native与设备工具；不承诺未验收的采集或扫描实现"
+    },
+    {
+      "source": "scripts/lsposed_scaffold.py",
+      "source_sha256": "eb40578368854ac56e91d07a1ad1a5e49eef8bcf9a6cc8a1c3491d9c46435b34",
+      "decision": "method-retained-implementation-not-bundled",
+      "targets": [
+        "reference/topics/module-delivery.md",
+        "reference/topics/kernel-observation.md",
+        "reference/topics/on-device.md"
+      ],
+      "reason": "作为可选实现路线，未打包未实际验证的设备/内核生成器和连接器"
+    },
+    {
+      "source": "scripts/mt_mcp_probe.py",
+      "source_sha256": "ae8787039324122b3680709c6e5b463182bcd7b6d63e79b0f0087721069127e6",
+      "decision": "method-retained-implementation-not-bundled",
+      "targets": [
+        "reference/topics/module-delivery.md",
+        "reference/topics/kernel-observation.md",
+        "reference/topics/on-device.md"
+      ],
+      "reason": "作为可选实现路线，未打包未实际验证的设备/内核生成器和连接器"
+    },
+    {
+      "source": "scripts/native_crash.py",
+      "source_sha256": "496a2e000bca11df79c20c747d1bef6c67a5ed089bb4f9cb9a5fdefe1d6b7649",
+      "decision": "method-retained-implementation-not-bundled",
+      "targets": [
+        "reference/topics/native-loader.md",
+        "reference/topics/native-tamper.md",
+        "reference/tools/idalib.md"
+      ],
+      "reason": "保留映射/调用/终止诊断，选实际native与设备工具；不承诺未验收的采集或扫描实现"
+    },
+    {
+      "source": "scripts/patch_smali.py",
+      "source_sha256": "1e38ae4a48d06e2c1771d240b51831b42e120bff071b3a08216f2145e38b6556",
+      "decision": "method-retained-implementation-not-bundled",
+      "targets": [
+        "reference/topics/dex-patching.md",
+        "reference/tools/apk.md"
+      ],
+      "reason": "保留修改技术，通过任务选定的可靠构建/修改工具实现；不复制未在本环境验证的写操作实现"
+    },
+    {
+      "source": "scripts/preflight.py",
+      "source_sha256": "366bc68c8cb1d0f917498a06231cfd186928a5bf4d594141072c09c3b16dcdc1",
+      "decision": "method-retained-implementation-not-bundled",
+      "targets": [
+        "reference/tool-capabilities.md",
+        "reference/tools/device.md",
+        "reference/topics/device-environment.md"
+      ],
+      "reason": "按需发现与已有MCP/CLI操作替代，不维护上游全量预检和设备外壳"
+    },
+    {
+      "source": "scripts/probe_api.py",
+      "source_sha256": "fbc3b0a3f0a409e92fac9edfd9fc99f3958219da53f65ba4c18f7e78560eba4b",
+      "decision": "method-retained-implementation-not-bundled",
+      "targets": [
+        "reference/topics/runtime-data.md",
+        "reference/topics/tls.md",
+        "reference/algorithm-validation.md",
+        "reference/tools/network.md"
+      ],
+      "reason": "设备写入、网络动作与证书实际值需要按任务确定，保留方法并使用当前受控工具"
+    },
+    {
+      "source": "scripts/protobuf_decode_raw.py",
+      "source_sha256": "2c9a4e88476538c1c459baabc7c8510da717769213d6ef1783cfc64b16e50fef",
+      "decision": "ported-offline",
+      "targets": [
+        "scripts/offline/protobuf_decode_raw.py",
+        "reference/tools/offline.md"
+      ],
+      "reason": "标准库离线解析/定位/差分能力已迁入并运行隔离回归和CLI检查",
+      "ported_sha256": "2c9a4e88476538c1c459baabc7c8510da717769213d6ef1783cfc64b16e50fef"
+    },
+    {
+      "source": "scripts/rasc_build.py",
+      "source_sha256": "8b520b1a12155e60cf5bd30f89f97d1648984ad87bc0eac07afe52ca6f4ca3d1",
+      "decision": "method-retained-implementation-not-bundled",
+      "targets": [
+        "reference/tools/offline.md",
+        "reference/evidence-and-renaming.md",
+        "maintenance/validate_skill.py"
+      ],
+      "reason": "保留外部索引及维护检查经验，不默认下载安装或扫描私有项目"
+    },
+    {
+      "source": "scripts/repack.py",
+      "source_sha256": "1a3d0122625427fd9d2adc60a870c02006ee32ccbc6d7941839a5c2c82cf80f3",
+      "decision": "method-retained-implementation-not-bundled",
+      "targets": [
+        "reference/tools/apk.md",
+        "reference/tools/device.md"
+      ],
+      "reason": "使用现有构建/签名和设备能力，避免维护重复归档与安装流水线"
+    },
+    {
+      "source": "scripts/rpc_template.js",
+      "source_sha256": "10a420f565c77c08ccb39f45936af8acf25d7a28f12326d57720e64273cfc0a8",
+      "decision": "method-retained-implementation-not-bundled",
+      "targets": [
+        "reference/topics/rpc-emulation.md",
+        "reference/tools/frida.md"
+      ],
+      "reason": "保留RPC边界，按宿主当前接口实现，避免固定设备会话与监听器"
+    },
+    {
+      "source": "scripts/run_probe.py",
+      "source_sha256": "40712e8cc9d367196111de161f1d6550c6d8eab76217c5b2bc2dad8135edf5d8",
+      "decision": "method-retained-implementation-not-bundled",
+      "targets": [
+        "reference/tools/frida.md",
+        "reference/topics/anti-analysis.md",
+        "reference/topics/native-tracing.md"
+      ],
+      "reason": "按当前目标生成最小观察/干预，不默认加载上游大型探针与退出改写脚本"
+    },
+    {
+      "source": "scripts/scan_leaks.py",
+      "source_sha256": "da4ede5c9aafe17e8ac7a864a48da6c123df35cf1220c5bdb31820758a12bd6d",
+      "decision": "method-retained-implementation-not-bundled",
+      "targets": [
+        "reference/tools/offline.md",
+        "reference/evidence-and-renaming.md",
+        "maintenance/validate_skill.py"
+      ],
+      "reason": "保留外部索引及维护检查经验，不默认下载安装或扫描私有项目"
+    },
+    {
+      "source": "scripts/sig_probe.py",
+      "source_sha256": "46b4ddfe7193ec1204943742bfed59ab7d9fc50880b5b75f6936be4c104101db",
+      "decision": "method-retained-implementation-not-bundled",
+      "targets": [
+        "reference/topics/runtime-data.md",
+        "reference/topics/tls.md",
+        "reference/algorithm-validation.md",
+        "reference/tools/network.md"
+      ],
+      "reason": "设备写入、网络动作与证书实际值需要按任务确定，保留方法并使用当前受控工具"
+    },
+    {
+      "source": "scripts/smtool.py",
+      "source_sha256": "f9e496695214facffa4d5a1b27d60cd70418f1e5f4b402f77e451b127a443221",
+      "decision": "method-retained-implementation-not-bundled",
+      "targets": [
+        "reference/topics/dex-patching.md",
+        "reference/tools/apk.md"
+      ],
+      "reason": "保留修改技术，通过任务选定的可靠构建/修改工具实现；不复制未在本环境验证的写操作实现"
+    },
+    {
+      "source": "scripts/snap.py",
+      "source_sha256": "f1104d55de01b9e13e3c213f9993bebe95f64b64d9df11aa8e02a826aed1e937",
+      "decision": "method-retained-implementation-not-bundled",
+      "targets": [
+        "reference/mobile-automation.md",
+        "reference/tools/device.md"
+      ],
+      "reason": "现有mobile-mcp/ADB已覆盖操作，补充样本和截图解释而不复制设备助手"
+    },
+    {
+      "source": "scripts/so_constpatch.py",
+      "source_sha256": "1b049ffaa4e7d7c90ee399c516db0c8bfeaf569742b593ae1eea845bc66a8c01",
+      "decision": "method-retained-implementation-not-bundled",
+      "targets": [
+        "reference/topics/dex-patching.md",
+        "reference/tools/apk.md"
+      ],
+      "reason": "保留修改技术，通过任务选定的可靠构建/修改工具实现；不复制未在本环境验证的写操作实现"
+    },
+    {
+      "source": "scripts/spawn_patch_detach.py",
+      "source_sha256": "be9bef5f117f4cb74f55b7b645bd4d6db7cf5f8d1ac0417b94dec4ae24bd0519",
+      "decision": "method-retained-implementation-not-bundled",
+      "targets": [
+        "reference/tools/frida.md",
+        "reference/topics/anti-analysis.md",
+        "reference/topics/native-tracing.md"
+      ],
+      "reason": "按当前目标生成最小观察/干预，不默认加载上游大型探针与退出改写脚本"
+    },
+    {
+      "source": "scripts/stalker_report.py",
+      "source_sha256": "7f6f89cb1d73f1747ed6697e0a4d6a76e60e68339222c819b22ed3e4852e11d0",
+      "decision": "method-retained-implementation-not-bundled",
+      "targets": [
+        "reference/tools/frida.md",
+        "reference/topics/anti-analysis.md",
+        "reference/topics/native-tracing.md"
+      ],
+      "reason": "按当前目标生成最小观察/干预，不默认加载上游大型探针与退出改写脚本"
+    },
+    {
+      "source": "scripts/stalker_trace.js",
+      "source_sha256": "4cf506302eb3015974d3dbbcc712d1d3eece5eb7d34a4d38b5d08b6397796fad",
+      "decision": "method-retained-implementation-not-bundled",
+      "targets": [
+        "reference/tools/frida.md",
+        "reference/topics/anti-analysis.md",
+        "reference/topics/native-tracing.md"
+      ],
+      "reason": "按当前目标生成最小观察/干预，不默认加载上游大型探针与退出改写脚本"
+    },
+    {
+      "source": "scripts/svc_scan.py",
+      "source_sha256": "554e5c73e5d68468120ead7fc4016f878a28b1556bcddcd0bc04c26c7200f889",
+      "decision": "method-retained-implementation-not-bundled",
+      "targets": [
+        "reference/topics/native-loader.md",
+        "reference/topics/native-tamper.md",
+        "reference/tools/idalib.md"
+      ],
+      "reason": "保留映射/调用/终止诊断，选实际native与设备工具；不承诺未验收的采集或扫描实现"
+    },
+    {
+      "source": "scripts/tls_check.py",
+      "source_sha256": "becaefbeca838387dd72fb528e4c6991517cfdbc0308ab1d79b7421da4fe7eb8",
+      "decision": "method-retained-implementation-not-bundled",
+      "targets": [
+        "reference/topics/runtime-data.md",
+        "reference/topics/tls.md",
+        "reference/algorithm-validation.md",
+        "reference/tools/network.md"
+      ],
+      "reason": "设备写入、网络动作与证书实际值需要按任务确定，保留方法并使用当前受控工具"
+    },
+    {
+      "source": "scripts/trace_addr2sym.py",
+      "source_sha256": "41df252a0756365fc93e957fa4ca86ead093fbb1ab4df3008adbbb46bdd28d18",
+      "decision": "ported-offline",
+      "targets": [
+        "scripts/offline/trace_addr2sym.py",
+        "reference/tools/offline.md"
+      ],
+      "reason": "标准库离线解析/定位/差分能力已迁入并运行隔离回归和CLI检查",
+      "ported_sha256": "41df252a0756365fc93e957fa4ca86ead093fbb1ab4df3008adbbb46bdd28d18"
+    },
+    {
+      "source": "scripts/trace_diff.py",
+      "source_sha256": "afe85f2761e3ab3c61da3ec40f3ce33a119736c4510013280d4cb7d858077be8",
+      "decision": "ported-offline",
+      "targets": [
+        "scripts/offline/trace_diff.py",
+        "reference/tools/offline.md"
+      ],
+      "reason": "标准库离线解析/定位/差分能力已迁入并运行隔离回归和CLI检查",
+      "ported_sha256": "afe85f2761e3ab3c61da3ec40f3ce33a119736c4510013280d4cb7d858077be8"
+    },
+    {
+      "source": "scripts/usb_net_proxy.py",
+      "source_sha256": "dca9a5fba4780bb531036b2ec0f7ffb75dcb1540f9d64bd76c1e9b60715bcdf2",
+      "decision": "method-retained-implementation-not-bundled",
+      "targets": [
+        "reference/tool-capabilities.md",
+        "reference/tools/device.md",
+        "reference/topics/device-environment.md"
+      ],
+      "reason": "按需发现与已有MCP/CLI操作替代，不维护上游全量预检和设备外壳"
+    },
+    {
+      "source": "scripts/vm_handler_slice.py",
+      "source_sha256": "2f25232d15e149bd63e18caa57b6a3a6505c8d915f8c3dbfd67ddc06e6739954",
+      "decision": "ported-offline",
+      "targets": [
+        "scripts/offline/vm_handler_slice.py",
+        "reference/tools/offline.md"
+      ],
+      "reason": "标准库离线解析/定位/差分能力已迁入并运行隔离回归和CLI检查",
+      "ported_sha256": "2f25232d15e149bd63e18caa57b6a3a6505c8d915f8c3dbfd67ddc06e6739954"
+    },
+    {
+      "source": "scripts/vmp_diff_harness.py",
+      "source_sha256": "c125f87130cda9a09437caad69fdc81d411488194a2bf0378b60ef4257eb4af3",
+      "decision": "method-retained-implementation-not-bundled",
+      "targets": [
+        "reference/topics/hardware-tracing.md",
+        "reference/vm-protection.md",
+        "reference/tools/specialists.md"
+      ],
+      "reason": "保留高级方法与验证前提，不把生成/夹具测试等同真实设备或保护平台能力"
+    }
+  ],
+  "additional_sources": [
+    {
+      "source": "tests/unit/test_blob_decode.py",
+      "source_sha256": "210a9936e38a8c08fea46f5b98cc852dcaafb8ec4304d1ebd3f3423a4c8e2d39",
+      "target": "maintenance/tests/test_blob_decode.py"
+    },
+    {
+      "source": "tests/unit/test_protobuf_decode_raw.py",
+      "source_sha256": "4b6e097c6845d736d2a5097d0c308b7641491c1640d354ef0ca7d45170f620b5",
+      "target": "maintenance/tests/test_protobuf_decode_raw.py"
+    },
+    {
+      "source": "tests/unit/test_trace_addr2sym.py",
+      "source_sha256": "6448c6570309ffebe52b5ccf17caf232ac8392d2d665ce272cc946a73d005b74",
+      "target": "maintenance/tests/test_trace_addr2sym.py"
+    },
+    {
+      "source": "tests/unit/test_trace_diff.py",
+      "source_sha256": "5c34edca9a3ef61e182beb4ca687b0305c12b506ea23b34666d998de2295921e",
+      "target": "maintenance/tests/test_trace_diff.py"
+    },
+    {
+      "source": "tests/unit/test_vm_handler_slice.py",
+      "source_sha256": "b8032f381bf270d5786c5729b9526156306ccab106b995f27bfbe8ee7c6e3090",
+      "target": "maintenance/tests/test_vm_handler_slice.py"
+    },
+    {
+      "source": "tests/unit/test_js_obf_detect.py",
+      "source_sha256": "ae6ee3a3fa751c2cdb5dd9152bc452808ed6475b376f5d3e585bc2b62142c78f",
+      "target": "maintenance/tests/test_js_obf_detect.py"
+    },
+    {
+      "source": "tests/unit/test_jsvmp_loader_decode.py",
+      "source_sha256": "32c8a96d8fe95fd54ab54011491c4df79f19776cdbeda5005434f03c49660513",
+      "target": "maintenance/tests/test_jsvmp_loader_decode.py"
+    },
+    {
+      "source": "tests/unit/test_kotlin_name_recovery.py",
+      "source_sha256": "dd3f102f658aabf171686d03234c28e9f1e4efc18a74006bab799a33d9622604",
+      "target": "maintenance/tests/test_kotlin_name_recovery.py"
+    },
+    {
+      "source": "tests/unit/test_dexutil.py",
+      "source_sha256": "05e29474d0728b0ee40503b0a536392b21a7af0c1d8bdb0865b5ec00ed47b4a4",
+      "target": "maintenance/tests/test_dexutil.py"
+    },
+    {
+      "source": "docs/tool-verification/fixtures/make_fixture_dex.py",
+      "source_sha256": "6c88d778b21efe03cbd5f60000fed566aceaf11aebd91c3c75b3d18b03d81326",
+      "target": "maintenance/tests/fixtures/make_fixture_dex.py"
+    }
+  ],
+  "adaptations": [
+    {
+      "file": "scripts/offline/apk_diff.py",
+      "changes": "streamed entry hashing; compression-only changes reported; duplicate names refused"
+    },
+    {
+      "file": "scripts/offline/dex_classdiff.py",
+      "changes": "access-flag changes affect result; no full verifier claim"
+    },
+    {
+      "file": "scripts/offline/dexutil.py",
+      "changes": "local --help returns success"
+    },
+    {
+      "file": "scripts/offline/dex_dump_validate.py",
+      "changes": "heuristic ordering is not an identity/protection verdict"
+    },
+    {
+      "file": "scripts/offline/java2c_probe.py",
+      "changes": "classification is unconfirmed; dynamic-registration shape is not binding proof; no mandatory recovery route"
+    },
+    {
+      "file": "scripts/offline/kotlin_name_recovery.py",
+      "changes": "build requires explicit new output directory; existing map queries remain supported"
+    }
+  ]
+}

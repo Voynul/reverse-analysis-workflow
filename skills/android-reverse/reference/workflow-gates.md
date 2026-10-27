@@ -41,6 +41,7 @@
 - DEX 中的 Java/Kotlin/smali。
 - Manifest、资源或配置。
 - native so/JNI。
+- React Native/JavaScript 或 Hermes 字节码。
 - Flutter/Dart AOT。
 - Unity/IL2CPP。
 - WebView/JavaScript。

@@ -8,7 +8,7 @@
 - 截图确认 UI 状态。
 - 配合 Frida 和 Reqable 批量采集运行时数据。
 
-## 标准流程
+## 可选观察路线
 
 1. 选择目标设备。
 2. 确认目标 APP 包名。
@@ -17,34 +17,18 @@
 5. 需要证据时截图或记录 UI 元素。
 6. 读取 Frida 日志和 Reqable 请求，与操作时间对齐。
 
-## 常用操作速查
+## 操作与环境
 
-| 任务 | 工具 |
-|---|---|
-| 列出设备 | `mobile_list_available_devices` |
-| 列出 APP | `mobile_list_apps` |
-| 启动 APP | `mobile_launch_app` |
-| 终止 APP | `mobile_terminate_app` |
-| 安装 APK | `mobile_install_app` |
-| 截图 | `mobile_take_screenshot` |
-| 保存截图 | `mobile_save_screenshot` |
-| 获取界面元素 | `mobile_list_elements_on_screen` |
-| 点击坐标 | `mobile_click_on_screen_at_coordinates` |
-| 双击 | `mobile_double_tap_on_screen` |
-| 长按 | `mobile_long_press_on_screen_at_coordinates` |
-| 滑动 | `mobile_swipe_on_screen` |
-| 输入文字 | `mobile_type_keys` |
-| 系统按键 | `mobile_press_button` |
-| 打开 URL | `mobile_open_url` |
+元素、坐标、截图、ADB 与安装接口见 [设备工具](tools/device.md)。本节关注如何构成可比较的运行样本；进程状态和环境故障见 [设备环境](topics/device-environment.md)。
 
 ## 自动化模板
 
 冷启动并触发页面：
 
 ```text
-1. 终止 APP，确保完全停止。
-2. 如需 Hook，先 spawn 或 attach。
-3. 启动 APP。
+1. 选择并确认本轮冷启动条件。
+2. 需要早期 Hook 时选择 spawn；否则在启动后的合适时机附加。
+3. 核对目标已经启动，避免重复启动覆盖本轮条件。
 4. 等待首页或开屏加载。
 5. 获取界面元素或截图。
 6. 点击目标按钮、Tab 或广告位。
@@ -67,7 +51,6 @@
 ## 操作建议
 
 - 优先用元素文本或描述定位；WebView 无法列出元素时使用坐标。
-- `mobile_list_elements_on_screen` 返回的坐标通常是元素中心点。
 - 根据界面元素、Activity、截图变化或网络状态等待目标条件满足；无法观察条件时才使用有上限的短暂等待。
 - 每次点击、滑动、输入都记录目的。
 - 复杂流程写成可重复步骤，便于复现。

@@ -39,7 +39,7 @@
 - 任务模式：`analysis`、`runtime-validation` 或 `patch-and-verify`。
 - 交付物：对话结论、脚本、修改 APK、验证记录或正式报告。
 - 已使用工具的目标、关键状态、版本或连接方式；未使用工具不记录。
-- 关键逻辑归属：DEX、资源、native、Flutter、Unity、WebView、服务端或待确认。
+- 关键逻辑归属：DEX、资源、native、React Native/Hermes、Flutter、Unity、WebView、服务端或待确认。
 - 正式报告策略：`required` 或 `not-required`；用户未要求时默认 `not-required`。
 - 报告策略的作用域：当前 APK 或用户明确指定的项目级默认值。
 - 外部 plan、项目规则或上层技能指定的文件路径引用。
@@ -87,7 +87,7 @@
 |---|---|
 | session/database | 工具返回的标识 |
 | binary_path | 目标二进制绝对路径 |
-| opened_by | 固定为 `agent/headless` |
+| opened_by | 已知创建者或 `unknown`，不因会话存在就推定归当前任务所有 |
 | related_apk | 可选的 APK 路径或包名 |
 | purpose | JNI 链路、独立 so 分析等 |
 | idle_ttl_sec | 无头 worker 的空闲退出时间 |

@@ -8,7 +8,9 @@
 - 确认加密字段、压缩字段、签名字段和业务字段。
 - 把抓包样本与静态代码、Hook 日志对应起来。
 
-## 标准流程
+任务涉及请求签名、加解密还原或离线复现时，按需读取 `algorithm-validation.md`。普通接口说明无须进入算法验证分支。
+
+## 可选分析路线
 
 1. 获取域名列表，区分业务域名、广告域名、统计域名、资源域名和第三方 SDK 域名。
 2. 按关键词、域名、状态码、方法筛选请求。
@@ -17,23 +19,11 @@
 5. 将字段含义回链到代码、Hook 日志或解密结果。
 6. 对加密字段记录算法定位、输入输出、解密代码和验证结果。
 
-## 常用操作速查
+## 操作与协议专题
 
-| 任务 | 工具 |
-|---|---|
-| 查看所有域名 | `get_domains` |
-| 列出请求 | `list_requests` |
-| 获取请求详情 | `get_request` |
-| 搜索请求 | `search_requests` |
-| 分析 API 结构 | `analyze_api` |
-| WebSocket 会话 | `list_websocket_sessions` |
-| 分析 WebSocket | `analyze_websocket_session` |
-| 搜索 WebSocket 消息 | `search_websocket_messages` |
-| 生成请求代码 | `generate_code` |
-| 健康检查 | `health_report` |
-| 导入 HAR | `import_har` |
+抓包接口、记录与重放操作见 [网络工具](tools/network.md)。解帧、Protobuf/schema、gRPC、QUIC 和长连接状态见 [协议分析](topics/protocols.md)，信任路径故障见 [TLS](topics/tls.md)。
 
-以上为逻辑操作名，实际命名空间以当前环境暴露的 Reqable 服务为准。
+解密文本、解帧消息和业务对象是不同阶段的证据。没有完整 schema 时保留字段编号、wire type、原始字节与候选解释，不把一次解析成功直接当业务含义。
 
 ## 分析模板
 

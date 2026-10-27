@@ -1,10 +1,10 @@
-# 工具能力与命名
+# 工具路由与按需发现
 
 ## 通用规则
 
 本技能面向多个 Agent 宿主。不同宿主可能为 MCP 工具添加不同前缀或命名空间，因此：
 
-1. 先查看当前环境实际暴露的服务和工具列表，不调用工具完成这一步。
+1. 先利用宿主已暴露的工具列表；需要发现接口时使用宿主提供的定向发现能力，不逐个启动服务。
 2. 按服务名和逻辑能力匹配，不假设宿主生成的命名空间前缀、安装路径或版本。
 3. 只调用已注册接口，不根据旧文档猜测不存在的工具。
 4. 只在任务第一次需要某项能力时做轻量验证，同一任务内复用结果。
@@ -19,20 +19,20 @@
 - 连接失败、工具重启、配置变化、设备变化或宿主变化后再重新验证。
 - 长任务可以在状态文件中记录工具、版本、连接方式和检查时间，但跨任务记录仅作提示，不能代替首次使用验证。
 
-## 能力映射
+## 操作文档
 
-| 服务 | 核心逻辑操作 | 用途 |
-|---|---|---|
-| `jadx-headless` | `load_apk`、`current_apk`、`index_status`、`get_android_manifest`、`get_class_source`、`get_smali_of_class`、`search_in_code`、`get_xrefs_to_*` | Java/Kotlin、smali、资源、搜索和调用关系 |
-| `idalib-mcp` | `idb_open`、`idb_list`、`server_health`、字符串、交叉引用、反汇编、伪代码和保存操作 | native so/JNI 无头分析 |
-| Frida 服务 | `check_frida_status`、`spawn`、`attach`、`get_messages` | Java/native 运行时验证 |
-| `mobile-mcp` | 设备、安装、启动、终止、元素、点击、输入、截图 | 手机操作和行为触发 |
-| Reqable 服务 | `get_domains`、`list_requests`、`get_request`、`search_requests`、WebSocket 和 HAR 操作 | 网络样本和接口分析 |
-| JEB | 类、方法、smali、交叉引用 | JADX 结果不清晰时的只读交叉验证 |
-| Apktool 服务或 CLI | 解码、重建、Manifest、smali、资源、搜索和项目结构操作 | Manifest、资源和 smali 的修改与重建 |
-| APK 签名工具 | 对齐、签名和最终验证 | 生成可安装的修改产物 |
-| DEX 工具 | DEX/JAR/smali 转换和校验 | Apktool 不适合表达的专项处理，不作为默认步骤 |
-| ADB | `install`、`install-multiple`、`shell am force-stop`、`shell monkey` 或显式 Activity 启动、`logcat` | 安装、冷启动、运行日志和 split APK 验收 |
+| 选定的实现 | 文档 |
+|---|---|
+| JADX/JEB/无头静态服务 | [jadx.md](tools/jadx.md) |
+| idalib/无头 native 服务 | [idalib.md](tools/idalib.md) |
+| Frida MCP/CLI/RPC | [frida.md](tools/frida.md) |
+| Reqable、流量文件与其他抓包实现 | [network.md](tools/network.md) |
+| mobile-mcp、ADB 与设备侧接口 | [device.md](tools/device.md) |
+| Apktool、归档、对齐和签名器 | [apk.md](tools/apk.md) |
+| 已迁入脚本、DEX 索引/SQL 与 JS 解析器 | [offline.md](tools/offline.md) |
+| runtime 前端、模拟执行、调试及高级观测 | [specialists.md](tools/specialists.md) |
+
+经验专题独立列在 [经验索引](experience-index.md)，可以在工具不可用时继续阅读和选择替代方法。一个专题可使用多种工具，一个工具也可服务多个专题。
 
 工具表只是能力说明，具体参数以当前工具 schema 为准。发生命名差异时，以工具描述和输入结构确认语义，不创建自定义别名冒充真实工具。
 
