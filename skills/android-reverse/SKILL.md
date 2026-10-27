@@ -51,59 +51,52 @@ description: 对 Android 安装包、DEX、smali、so/JNI 及运行中目标进�
 3. 确定任务模式：默认 `analysis`；需要 Hook、设备操作或抓包时增加 `runtime-validation`；用户明确要求修改 APK 时使用 `patch-and-verify`。
 4. 从用户请求确定交付物。未要求正式报告时默认直接回答，不为报告策略单独打断简单任务。
 5. 确认目标文件的绝对路径和可取得的身份信息；修改模式还需记录文件大小和 SHA-256。
-6. 只执行当前任务分支需要的环境检查和 `reference/workflow-gates.md` 关卡，再开始分析或修改。
+6. 只检查当前任务实际需要的能力；需要分阶段验证时参照 `reference/workflow-gates.md`，不把关卡当作所有任务的前置清单。
 
 工作状态和中间产物规则见 `reference/workspace-state.md`；APK 层级归属见 `reference/package-recon.md`。
 
-## 工具路由
+## 技能路由：选择经验专题
 
-| 场景 | 首选工具 | 补充工具 | 参考文档 |
-|---|---|---|---|
-| 安装包内的 Java/Kotlin 反编译逻辑、Manifest、调用链 | 无头 JADX 服务 `jadx-headless` | JEB、smali | `reference/static-analysis.md` |
-| 参数、返回值、明文、分支、运行时调用栈 | Frida MCP | Frida CLI | `reference/dynamic-hook.md` |
-| 启动、点击、滑动、截图、触发流程 | mobile-mcp | ADB | `reference/mobile-automation.md` |
-| HTTP/HTTPS、WebSocket、HAR、接口字段 | reqable MCP | Hook 日志、解密结果 | `reference/network-traffic.md` |
-| so、JNI、native 加解密、签名、校验 | 无头 IDA 服务 `idalib-mcp` | Frida Native Hook | `reference/native-analysis.md` |
-| 加固、Flutter、Unity、WebView、服务端归属 | 包结构与运行时侦察 | 静态字符串、Frida、网络证据 | `reference/package-recon.md` |
-| APK 修改、重建、签名、安装与验收 | Apktool 或等价无头构建工具 | 可用签名工具、ADB、mobile-mcp | `reference/patch-and-verify.md` |
-| 证据判断、混淆理解、语义命名 | 对话与内部分析材料 | 按需生成命名或证据文件 | `reference/evidence-and-renaming.md` |
+这里的技能路由是本技能内部的经验路由，不要求拆成多个独立 Skill。根据问题选择专题，可组合、跳过或返回；专题不与某个工具绑定。完整清单见 [经验索引](reference/experience-index.md)。
 
-工具命名空间由 Agent 宿主决定。技能正文只使用 MCP 服务名和逻辑能力，不假设宿主生成的命名空间前缀、安装路径或版本。只读取当前任务实际涉及的参考文档；能力映射和发现规则见 `reference/tool-capabilities.md`。
+| 问题 | 按需读取 |
+|---|---|
+| 目标身份、逻辑归属、Java/Kotlin、混淆名称 | [结构侦察](reference/package-recon.md)、[静态分析](reference/static-analysis.md)、[Kotlin 名称](reference/topics/kotlin-names.md) |
+| 加固、抽取壳、Java2C、自定义加载器 | [脱壳与载荷](reference/topics/unpacking.md)、[加载器](reference/topics/native-loader.md) |
+| JS、AST、WebView、JSVMP | [JS AST](reference/topics/js-ast.md)、[JSVMP](reference/topics/jsvmp.md)、[系统交互](reference/topics/system-ipc.md) |
+| React Native、Flutter/Dart、Unity/Mono/IL2CPP | [React Native](reference/react-native-hermes.md)、[Flutter/Dart](reference/flutter-dart.md)、[Unity/IL2CPP](reference/unity-il2cpp.md) |
+| JNI、native、VMP、反分析、指令轨迹 | [native](reference/native-analysis.md)、[VM](reference/vm-protection.md)、[反分析](reference/topics/anti-analysis.md)、[轨迹](reference/topics/native-tracing.md) |
+| 网络、算法、长连接、原函数调用 | [网络](reference/network-traffic.md)、[协议](reference/topics/protocols.md)、[算法](reference/algorithm-validation.md)、[RPC/模拟执行](reference/topics/rpc-emulation.md) |
+| 广告、远程配置、账户限制、更新与本地数据 | [业务专题索引](reference/experience-index.md#业务与数据) |
+| 修改、重建、split、第三方包与模块交付 | [修改验收](reference/patch-and-verify.md)、[DEX 修改](reference/topics/dex-patching.md)、[交付专题索引](reference/experience-index.md#修改与交付) |
+| 设备、硬件/内核观测及少见运行时 | [高级专题索引](reference/experience-index.md#设备与高级观测) |
+| 故障、反例、证据与历史经验 | [故障目录](reference/topics/failure-catalog.md)、[案例](reference/topics/cases.md)、[证据](reference/evidence-and-renaming.md) |
 
-### 工具发现
+## 工具路由：选择实现并读取操作文档
 
-1. 不在技能加载时启动或健康检查全部工具。
-2. 先根据任务判断需要的能力分支，再从当前 Agent 宿主暴露的工具列表识别候选服务。
-3. 当前任务第一次使用某项能力时，执行一次轻量验证或安全的只读操作；后续复用该结果。
-4. 只有连接失败、工具重启、配置变化、设备变化或宿主变化后才重新验证。
-5. 首选工具不可用时，可以使用经过验证的等价无头工具，并说明替代关系和证据边界；不得静默回退 GUI 服务。
-6. 没有可用替代方案时，只暂停受影响分支，继续不依赖该能力的工作。
+只有需要实际操作时才选择工具并读取相应操作文档。当前环境的工具 schema、版本和能力优先；下表不是能力上限，也不要求安装表中工具。
 
-### JADX 无头模式
+| 已选择的实现 | 操作文档 |
+|---|---|
+| `jadx-headless`、JEB 或等价无头 DEX 分析服务 | [静态工具](reference/tools/jadx.md) |
+| `idalib-mcp` 或等价无头 native 分析服务 | [native 工具](reference/tools/idalib.md) |
+| Frida MCP、CLI 或原函数 RPC | [Frida](reference/tools/frida.md) |
+| Reqable 或其他抓包实现 | [网络工具](reference/tools/network.md) |
+| mobile-mcp、ADB 或设备侧接口 | [设备操作](reference/tools/device.md) |
+| Apktool、归档工具、对齐与签名器 | [APK 构建签名](reference/tools/apk.md) |
+| 离线脚本、DEX 索引/SQL、JS 解析器 | [离线工具](reference/tools/offline.md) |
+| Dart/Unity 解析器、模拟执行与调试/跟踪工具 | [专项工具](reference/tools/specialists.md) |
 
-1. 当前环境提供 `jadx-headless` 时优先使用；不可用时可以使用经过验证的等价无头静态分析能力，不探测、调用或回退到 JADX GUI MCP。
-2. 只加载用户明确选择的 APK、DEX、AAB、XAPK、APKM 或 JAR 绝对路径。
-3. `load_apk` 后用 `current_apk`、`index_status` 和 Manifest 核对目标身份与索引质量。
-4. 工具连接、索引或反编译失败时报告失败位置，不把工具失败作为代码不存在的证据。
-5. 服务默认由 MCP 宿主管理；只有用户明确要求关闭或释放进程内存时才调用 `shutdown_jadx`。
+不在技能加载时启动或检查全部工具。当前任务首次使用某项能力时轻量验证，之后复用；连接、配置、设备或宿主变化后才重新检查。缺少工具时可选择等价无头实现，只暂停确实受影响的分支。发现和缓存细则见 [工具能力](reference/tool-capabilities.md)。
 
-### IDA 无头模式
-
-当前环境提供 `idalib-mcp` 时优先用于 so / JNI / native 分析；不可用时可以使用等价无头 native 分析能力，详细规则见 `reference/native-analysis.md`。
-
-1. 打开二进制时使用 `idb_open` 并显式选择无头模式；不得探测或接管 GUI IDA。
-2. 使用 `idb_list` 和健康状态确认 database/session、自动分析及反编译器状态。
-3. IDA session 不强制绑定 APK；APK 切换不自动切换目标 so。
-4. 无头 worker 的退出由 `idle_ttl_sec` 和服务端生命周期管理，Agent 不通过系统命令终止 worker。
-
-如果所需工具未启用、连接失败或服务未启动，先检查当前环境是否存在等价无头能力。没有替代方案时报告失败原因和受影响结论，不把工具不可用当作目标中没有对应逻辑的证据。
+Java/native 默认采用无头方式，不静默探测或接管 GUI。工具失败、未命中或不完整输出只能说明当前证据边界，不能证明目标逻辑不存在。
 
 ## 默认分析路线
 
 按任务需要选择步骤，不要求全部执行，也不要求固定顺序。
 
 1. 明确任务模式、交付物和目标身份。
-2. 判断关键逻辑归属：DEX、资源、native、Flutter、Unity、WebView 或服务端。
+2. 判断关键逻辑归属：DEX、资源、native、React Native/Hermes、Flutter、Unity、WebView 或服务端。
 3. 静态定位入口并追踪上下游链路，标出关键分支、配置、缓存、网络和回调。
 4. 根据需要理解混淆、建立语义名称或保存证据位置。
 5. 证据不足时使用 Hook、设备操作、抓包或 native 分析补证。
